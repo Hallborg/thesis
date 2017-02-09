@@ -12,6 +12,9 @@ src_managed/
 project/boot/
 project/plugins/project/
 
+# intellij
+.idea/
+
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
@@ -19,3 +22,6 @@ project/plugins/project/
 # ENSIME specific
 .ensime_cache/
 .ensime
+
+#mac
+.DS_Store
