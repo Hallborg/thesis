@@ -12,6 +12,6 @@ object CassandraClient {
   val session = cluster.connect()
 
   def getValueFromCassandraTable() = {
-    session.execute("SELECT * FROM mykeyspace.users")
+    session.execute("SELECT * FROM mykeyspace.users").one()
   }
 }
