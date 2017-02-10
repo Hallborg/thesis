@@ -14,4 +14,8 @@ object CassandraClient {
   def getValueFromCassandraTable() = {
     session.execute("SELECT * FROM mykeyspace.users").one()
   }
+  def closeCon(): Unit = {
+    session.close()
+    cluster.close()
+  }
 }

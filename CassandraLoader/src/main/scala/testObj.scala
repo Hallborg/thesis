@@ -4,4 +4,6 @@
 object testObj extends App{
   println("Hello world")
   println(CassandraClient.getValueFromCassandraTable())
+  CassandraClient.closeCon()
+
 }
