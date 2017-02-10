@@ -6,7 +6,7 @@ import com.datastax.driver.core.Cluster
 object CassandraClient {
   private val cluster = Cluster.builder()
     .addContactPoint("localhost")
-    .withPort(32771) // 9042
+    .withPort(32776) // 9042
     .build()
 
   val session = cluster.connect()

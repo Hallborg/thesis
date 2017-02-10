@@ -3,5 +3,5 @@
   */
 object testObj extends App{
   println("Hello world")
-  CassandraClient.getValueFromCassandraTable()
+  println(CassandraClient.getValueFromCassandraTable())
 }
