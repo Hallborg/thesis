@@ -1,10 +1,10 @@
 #!/bin/sh
 
-docker run --name cont1 -d cassandra:3
+docker run --name cont1 -d -p 2003:9042 cassandra:3
 sleep 60
-docker run --name cont2 -d -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
+docker run --name cont2 -d -p 2004:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
 sleep 60
-docker run --name cont3 -d -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont2)" cassandra:3
+docker run --name cont3 -d -p 2005:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont2)" cassandra:3
 sleep 30
 docker ps
 sleep 30
