@@ -1,0 +1,18 @@
+#!/bin/bash
+
+VAL=$1$2
+C=$3
+C2=$4
+HOSTR="host1.read"
+HOSTW="host1.write"
+DAY=$(date +%a)
+MAN=$(date +%b)
+DAYNR=$(date +%d)
+YEAR=$(date +%Y)
+TIMEZ=$(date +%Z)
+S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
+TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
+RT=$(date -d "$TIMESTAMP" +%s)
+wait
+echo "$HOSTR $C $RT" >> diskReadMonitoring.txt
+echo "$HOSTW $C2 $RT" >> diskWriteMonitoring.txt

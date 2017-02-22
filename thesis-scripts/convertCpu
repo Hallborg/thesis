@@ -1,0 +1,15 @@
+#!/bin/bash
+
+VAL=$1$2
+C=$3
+HOST="host1.cpu"
+DAY=$(date +%a)
+MAN=$(date +%b)
+DAYNR=$(date +%d)
+YEAR=$(date +%Y)
+TIMEZ=$(date +%Z)
+S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
+TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
+RT=$(date -d "$TIMESTAMP" +%s)
+wait
+echo "$HOST $C $RT" >> cpuMonitoring.txt
