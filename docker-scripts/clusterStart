@@ -26,6 +26,7 @@ docker exec -i -t cont1 sh -c 'nodetool status' # inspect clusters
 # docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1 #find ip
 
 
+# 55a5678e71b4 55a5678e71b4
 
 #-v private/var/lib/cassandra/c1:/var/lib/cassandra
 #docker run -d  -e “CASSANDRA_TOKEN=-9223372036854775808” --name c1 cassandra
