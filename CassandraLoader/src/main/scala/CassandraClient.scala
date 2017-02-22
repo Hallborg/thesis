@@ -5,14 +5,14 @@ import com.datastax.driver.core.Cluster
   */
 object CassandraClient {
   private val cluster = Cluster.builder()
-    .addContactPoint("localhost")
-    .withPort(32776) // 9042
+    .addContactPoint("0.0.0.0") //"localhost"
+    .withPort(2003) // 9042 32776
     .build()
 
   val session = cluster.connect()
 
   def getValueFromCassandraTable() = {
-    session.execute("SELECT * FROM mykeyspace.users").one()
+    session.execute("SELECT * FROM myk.users").all()
   }
   def closeCon(): Unit = {
     session.close()
