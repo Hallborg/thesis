@@ -1,9 +1,11 @@
 /**
   * Created by pps on 2017-02-09.
   */
-object testObj extends App{
-  println("Hello world")
-  println(CassandraClient.getValueFromCassandraTable())
-  CassandraClient.closeCon()
-
+object testObj {
+  def main(args: Array[String]): Unit = {
+    println("Hello world")
+    CassandraClient.insertValueFromCassandraTable()
+    println(CassandraClient.getValueFromCassandraTable())
+    CassandraClient.closeCon()
+  }
 }

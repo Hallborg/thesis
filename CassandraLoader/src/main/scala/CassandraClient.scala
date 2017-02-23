@@ -14,6 +14,9 @@ object CassandraClient {
   def getValueFromCassandraTable() = {
     session.execute("SELECT * FROM myk.users").all()
   }
+  def insertValueFromCassandraTable() = {
+    session.execute("INSERT into myk.users (id, name, email) VALUES ('1','Jesper','j@gmail.com')")
+  }
   def closeCon(): Unit = {
     session.close()
     cluster.close()
