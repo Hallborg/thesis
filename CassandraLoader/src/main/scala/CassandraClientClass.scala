@@ -1,12 +1,12 @@
 import com.datastax.driver.core.Cluster
 
 /**
-  * Created by pps on 2017-02-09.
+  * Created by pps on 2017-02-23.
   */
-object CassandraClient {
+class CassandraClientClass(var port: Int) {
   private val cluster = Cluster.builder()
     .addContactPoint("0.0.0.0") //"localhost"
-    .withPort(53003) // 9042 32776
+    .withPort(port) // 9042 32776
     .build()
 
   val session = cluster.connect()
@@ -24,7 +24,7 @@ object CassandraClient {
     session.execute("INSERT into myk.users (id, name, email) VALUES ('3','MyNemeIiJeff','jeff@gmail.com')")
   }
   def execSession(theStr: String) = {
-    session.execute(theStr)
+    session.execute(theStr).one()
   }
   def closeCon(): Unit = {
     session.close()
