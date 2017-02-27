@@ -1,0 +1,57 @@
+{
+  "edrs": {
+    "id": "006ef7803400212312810823037702",
+    "services": "1",
+    "event-details": {
+      "traffic-case": "originating",
+      "a-party-location": {
+        "destination": "73210300CA787B"
+      },
+      "b-party-number": "3043455744",
+      "event-type": "Voice",
+      "is-roaming": false,
+      "b-party-location": {
+        "destination": "0"
+      },
+      "a-party-number": "3045575345"
+    },
+    "created_at": "2016-01-13T14:33:37.000Z",
+    "started_at": "2016-01-13T14:33:37.000Z",
+    "event-charges": {
+      "charged-amounts": [
+        {
+          "amount": 170,
+          "id": "0",
+          "end-balance": 870.5,
+          "resource-type": "Money",
+          "name": "REAL",
+          "expiry-date": null,
+          "charged-type": "REAL",
+          "event-type": "Voice"
+        },
+        {
+          "amount": 0,
+          "id": "1",
+          "end-balance": 0,
+          "resource-type": "Money",
+          "name": "BONUS",
+          "expiry-date": null,
+          "charged-type": "BONUS",
+          "event-type": "Voice"
+        }
+      ],
+      "products": {
+        "id": "110042",
+        "name": "Call Plan Normal"
+      },
+      "charged-units": {
+        "amount": 34,
+        "unit-of-measure": "seconds"
+      }
+    },
+    "service_units": {
+      "amount": 34,
+      "unit-of-measure": "seconds"
+    }
+  }
+}
