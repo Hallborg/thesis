@@ -1,4 +1,5 @@
- {
+{
+  "edr": {
     "id": "006ef7803400212312810823037702",
     "service": "1",
     "event-details": {
@@ -53,3 +54,4 @@
       "unit-of-measure": "seconds"
     }
   }
+}

@@ -2,6 +2,8 @@
 import scala.io.Source
 import java.io.InputStream
 
+import com.fasterxml.jackson.annotation.JsonValue
+
 //import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
 ///import play.api.libs.json.jackson.JacksonJson
 //import org.apache.flink.api.scala._
@@ -16,11 +18,14 @@ object testObj {
     println("Hello world")
     val con1 = new CassandraClientClass(53003)
 
-    val source: String = Source.fromFile("/Users/pps/Documents/scala/IdeaProjects/thesis/dataModel/call_event.json").getLines.mkString
+    val source: String = Source.fromFile("../dataModel/call_event.json").getLines.mkString
     val json: JsValue = Json.parse(source)
     val json_str: String = json.toString()
-    //println(json_str.charAt(50))
-    println(json_str.contains("\"service\":\"1\""))
+    //println(json_str.charAt(50)
+    //convert(json\("edr")\("service"))
+    check_service(json\("edr")\("service"), json)
+    //check_service(convert(json\("edr")\("service")))
+    //println(json_str.contains("\"service\":\"1\""))
     //con1.execSession(
     //  "INSERT INTO cdr.edr JSON '%s!' ".format(json)
     //)
@@ -55,5 +60,18 @@ object testObj {
     //CassandraClient.insertValueFromCassandraTable()
     //println(CassandraClient.getValueFromCassandraTable())
     //CassandraClient.closeCon()*/
+  }
+
+  def check_service(service: JsValue, json: JsValue): Unit = {
+    convert(service) match { //convert(service)
+      case 1 => call_event(json)
+      case 0 => println("service 0")
+    }
+  }
+  def convert(value: JsValue): Int = {
+    value.as[String].toInt
+  }
+  def call_event(json: JsValue): Unit = {
+    println("service 1")
   }
 }
