@@ -1,6 +1,6 @@
 CREATE KEYSPACE IF NOT EXISTS cdr WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
 
-CREATE TYPE IF NOT EXISTS cdr.product(
+CREATE TYPE IF NOT EXISTS cdr.products(
   id  TEXT,
   name TEXT
 );
@@ -12,13 +12,13 @@ CREATE TYPE IF NOT EXISTS cdr.location_information(
   cell_global_idenfitifaction TEXT
 );
 
-CREATE TYPE IF NOT EXISTS cdr.service_unit(
+CREATE TYPE IF NOT EXISTS cdr.service_units(
   amount DECIMAL,
   currency TEXT,
   unit_of_measure TEXT
 );
 
-CREATE TYPE IF NOT EXISTS cdr.charged_amount(
+CREATE TYPE IF NOT EXISTS cdr.charged_amounts(
   id TEXT,
   name TEXT,
   charged_type TEXT,
@@ -34,22 +34,22 @@ CREATE TYPE IF NOT EXISTS cdr.call_event_details(
   event_type TEXT,
   is_roaming BOOLEAN,
   a_party_number TEXT,
-  a_party_location frozen<location_information>,
+  a_party_location frozen<cdr.location_information>,
   b_party_number TEXT,
-  b_party_location frozen<location_information>
+  b_party_location frozen<cdr.location_information>
 );
 
 CREATE TYPE IF NOT EXISTS cdr.data_event_details(
   access_point_name TEXT,
   is_roaming BOOLEAN,
   a_party_number TEXT,
-  a_party_location frozen<location_information>,
+  a_party_location frozen<cdr.location_information>,
 );
 
 CREATE TYPE IF NOT EXISTS cdr.event_charges(
-  event_units frozen<service_unit>,
-  product_info frozen<product>,
-  charged_amounts list<frozen<charged_amount>>
+  charged_units frozen<cdr.service_units>,
+  products frozen<cdr.products>,
+  charged_amounts list<frozen<cdr.charged_amounts>>
 );
 
 CREATE TABLE IF NOT EXISTS cdr.edr (
@@ -57,7 +57,8 @@ CREATE TABLE IF NOT EXISTS cdr.edr (
     service TEXT,
     created_at TIMESTAMP,
     started_at TIMESTAMP,
-    used_service_units frozen<service_unit>,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
     call_event frozen<call_event_details>,
     data_event frozen<data_event_details>
 );

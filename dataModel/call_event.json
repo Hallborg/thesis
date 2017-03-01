@@ -1,67 +1,67 @@
-[{
-  "edr": {
-    "id": "006ef7803400212312810823037702",
-    "service": "1",
-    "event_details": {
-      "traffic_case": "originating",
-      "a_party_location": {
-        "destination": "73210300CA787B"
-      },
-      "b_party_number": "3043455744",
-      "event_type": "Voice",
-      "is_roaming": false,
-      "b_party_location": {
-        "destination": "0"
-      },
-      "a_party_number": "3045575345"
-    },
-    "created_at": "2016-01-13T14:33:37.000Z",
-    "started_at": "2016-01-13T14:33:37.000Z",
-    "event_charges": {
-      "charged_amounts": [
-        {
-          "amount": 170,
-          "id": "0",
-          "end_balance": 870.5,
-          "resource_type": "Money",
-          "name": "REAL",
-          "expiry_date": null,
-          "charged_type": "REAL",
-          "event_type": "Voice"
+[
+  {
+    "edr": {
+      "id": "006ef7803400212312810823037702",
+      "service": "1",
+      "event_details": {
+        "traffic_case": "originating",
+        "a_party_location": {
+          "destination": "73210300CA787B"
         },
-        {
-          "amount": 0,
-          "id": "1",
-          "end_balance": 0,
-          "resource_type": "Money",
-          "name": "BONUS",
-          "expiry_date": null,
-          "charged_type": "BONUS",
-          "event_type": "Voice"
-        }
-      ],
-      "products": {
-        "id": "110042",
-        "name": "Call Plan Normal"
+        "b_party_number": "3043455744",
+        "event_type": "Voice",
+        "is_roaming": false,
+        "b_party_location": {
+          "destination": "0"
+        },
+        "a_party_number": "3045575345"
       },
-      "charged_units": {
+      "created_at": "2016-01-13T14:33:37.000Z",
+      "started_at": "2016-01-13T14:33:37.000Z",
+      "event_charges": {
+        "charged_amounts": [
+          {
+            "amount": 170,
+            "id": "0",
+            "end_balance": 870.5,
+            "resource_type": "Money",
+            "name": "REAL",
+            "expiry_date": null,
+            "charged_type": "REAL",
+            "event_type": "Voice"
+          },
+          {
+            "amount": 0,
+            "id": "1",
+            "end_balance": 0,
+            "resource_type": "Money",
+            "name": "BONUS",
+            "expiry_date": null,
+            "charged_type": "BONUS",
+            "event_type": "Voice"
+          }
+        ],
+        "products": {
+          "id": "110042",
+          "name": "Call Plan Normal"
+        },
+        "charged_units": {
+          "amount": 34,
+          "unit_of_measure": "seconds"
+        }
+      },
+      "service_units": {
         "amount": 34,
         "unit_of_measure": "seconds"
       }
-    },
-    "service_units": {
-      "amount": 34,
-      "unit_of_measure": "seconds"
     }
-  }
-},
+  },
   {
     "edr": {
       "id": "00e337504400212312810822877901",
       "service": "2",
       "event_details": {
         "access_point_name": "example.com",
-        "user_location": null,
         "is_roaming": false,
         "a_party_number": "3045575345",
         "a_party_location": {
