@@ -1,7 +1,6 @@
-{
-  "edrs": {
+ {
     "id": "006ef7803400212312810823037702",
-    "services": "1",
+    "service": "1",
     "event-details": {
       "traffic-case": "originating",
       "a-party-location": {
@@ -54,4 +53,3 @@
       "unit-of-measure": "seconds"
     }
   }
-}
