@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #update before doing anything!
 yum -y update;
 
