@@ -8,7 +8,7 @@ yum-config-manager \
     --add-repo \
    https://download.docker.com/linux/centos/docker-ce.repo;
 yum makecache fast;
-yum -y install docker-engine;
+yum -y install docker-ce;
 
 # Linux containers
 yum install epel-release -y;
