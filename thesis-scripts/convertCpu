@@ -1,15 +1,18 @@
 #!/bin/bash
-
-VAL=$1$2
-C=$3
-HOST="host1.cpu"
-DAY=$(date +%a)
-MAN=$(date +%b)
-DAYNR=$(date +%d)
-YEAR=$(date +%Y)
-TIMEZ=$(date +%Z)
-S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
-TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
-RT=$(date -d "$TIMESTAMP" +%s)
-wait
-echo "$HOST $C $RT" >> cpuMonitoring.txt
+rm cpuMonitoring.txt
+while read NAME1; do
+	echo $NAME1 > temp
+	VAL=$(awk '{print $1, $2}' temp)
+	C=$(awk '{print $3}' temp)
+	HOST="host1.cpu"
+	DAY=$(date +%a)
+	MAN=$(date +%b)
+	DAYNR=$(date +%d)
+	YEAR=$(date +%Y)
+	TIMEZ=$(date +%Z)
+	S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
+	TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
+	RT=$(date -d "$TIMESTAMP" +%s%N)
+	wait
+	echo "$HOST value=$C $RT" >> cpuMonitoring.txt
+done < $1

@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # Update before doing anything!
+
 yum -y update;
 
 # Docker
 yum install -y yum-utils;
 yum-config-manager \
     --add-repo \
-    https://docs.docker.com/engine/installation/linux/repo_files/centos/docker.repo;
+   https://download.docker.com/linux/centos/docker-ce.repo;
 yum makecache fast;
-systemctl start docker;
+yum -y install docker-ce;
 
 # Linux containers
 yum install epel-release -y;

@@ -1,18 +1,21 @@
 #!/bin/bash
-
-VAL=$1$2
-C=$3
-C2=$4
-HOSTR="host1.read"
-HOSTW="host1.write"
-DAY=$(date +%a)
-MAN=$(date +%b)
-DAYNR=$(date +%d)
-YEAR=$(date +%Y)
-TIMEZ=$(date +%Z)
-S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
-TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
-RT=$(date -d "$TIMESTAMP" +%s)
-wait
-echo "$HOSTR $C $RT" >> diskReadMonitoring.txt
-echo "$HOSTW $C2 $RT" >> diskWriteMonitoring.txt
+rm diskReadMonitoring.txt | rm diskWriteMonitoring.txt
+while read NAME3; do
+	echo $NAME3 > temp2
+	VAL=$(awk '{print $1, $2}' temp2)
+	C=$(awk '{print $3}' temp2)
+	C2=$(awk '{print $4}' temp2)
+	HOSTR="host1.read"
+	HOSTW="host1.write"
+	DAY=$(date +%a)
+	MAN=$(date +%b)
+	DAYNR=$(date +%d)
+	YEAR=$(date +%Y)
+	TIMEZ=$(date +%Z)
+	S=$(echo " $VAL "|awk -F'|' 'BEGIN{OFS="|"}{("date --date=\""$1"\" +%T") |getline $1;print }')
+	TIMESTAMP="$DAY $MAN $DAYNR $S $TIMEZ $YEAR"
+	RT=$(date -d "$TIMESTAMP" +%s%N)
+	wait
+	echo "$HOSTR value=$C $RT" >> diskReadMonitoring.txt
+	echo "$HOSTW value=$C2 $RT" >> diskWriteMonitoring.txt
+done < $1

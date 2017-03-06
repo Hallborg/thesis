@@ -26,8 +26,7 @@ object testObj {
 
   def executeQuery(json: JsValue, con: CassandraClientClass): Unit = {
     val json_part = check_service(json \ ("edr") \ ("service"), json)
-    println(json_part)
-
+    //println(json_part)
     con.execSession(
       "INSERT INTO cdr.edr JSON '%s!'".format(json_part)
     )
