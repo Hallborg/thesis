@@ -52,7 +52,7 @@ CREATE TYPE IF NOT EXISTS cdr.event_charges(
   charged_amounts list<frozen<cdr.charged_amounts>>
 );
 
-CREATE TABLE IF NOT EXISTS cdr.edr (
+CREATE TABLE IF NOT EXISTS cdr.edr_by_id (
     id TEXT PRIMARY KEY,
     service TEXT,
     created_at TIMESTAMP,
@@ -61,4 +61,41 @@ CREATE TABLE IF NOT EXISTS cdr.edr (
     event_charges frozen<cdr.event_charges>,
     call_event frozen<call_event_details>,
     data_event frozen<data_event_details>
+);
+
+CREATE TABLE IF NOT EXISTS cdr.edr_by_date (
+    id TEXT,
+    service TEXT,
+    created_at TIMESTAMP,
+    started_at TIMESTAMP,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
+    call_event frozen<call_event_details>,
+    data_event frozen<data_event_details>,
+    PRIMARY KEY (started_at, id)
+);
+
+CREATE TABLE IF NOT EXISTS cdr.edr_by_service (
+    id TEXT,
+    service TEXT,
+    created_at TIMESTAMP,
+    started_at TIMESTAMP,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
+    call_event frozen<call_event_details>,
+    data_event frozen<data_event_details>,
+    PRIMARY KEY (service, id)
+);
+
+CREATE TABLE IF NOT EXISTS cdr.edr_by_destination (
+    id TEXT,
+    destination TEXT,
+    service TEXT,
+    created_at TIMESTAMP,
+    started_at TIMESTAMP,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
+    call_event frozen<call_event_details>,
+    data_event frozen<data_event_details>,
+    PRIMARY KEY (destination, id)
 );

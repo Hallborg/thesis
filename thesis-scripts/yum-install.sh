@@ -1,5 +1,6 @@
 #!/bin/bash
-#update before doing anything!
+
+# Update before doing anything!
 yum -y update;
 
 # Docker
@@ -18,9 +19,10 @@ yum install lxc lxc-templates -y;
 
 # Cassandra
 yum install java -y;
-echo -e "[datastax]\nname = DataStax Repo for Apache Cassandra\nbaseurl = http://rpm.datastax.com/community\nenabled = 1\ngpgcheck = 0" > /etc/yum.repos.d/datastax.repo;
-yum install dsc30 -y;
-yum install cassandra30-tools -y;
+echo -e "[datastax-ddc]\nname = DataStax Repo for Apache Cassandra\nbaseurl = http://rpm.datastax.com/datastax-ddc/3.9\nenabled = 1\ngpgcheck = 0" > /etc/yum.repos.d/datastax.repo;
+yum install -y datastax-ddc;
+
+yum install -y sysstat;
 
 
 # Use systemctl to start, stop and monitor status of :
