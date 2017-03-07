@@ -4,7 +4,7 @@ while read NAME1; do
 	echo $NAME1 > temp
 	VAL=$(awk '{print $1, $2}' temp)
 	C=$(awk '{print $3}' temp)
-	HOST="host1.cpu"
+	HOST="$(hostname).cpu"
 	DAY=$(date +%a)
 	MAN=$(date +%b)
 	DAYNR=$(date +%d)
