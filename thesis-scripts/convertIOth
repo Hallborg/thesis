@@ -5,8 +5,8 @@ while read NAME3; do
 	VAL=$(awk '{print $1, $2}' temp2)
 	C=$(awk '{print $3}' temp2)
 	C2=$(awk '{print $4}' temp2)
-	HOSTR="host1.read"
-	HOSTW="host1.write"
+	HOSTR="$(hostname).read"
+	HOSTW="$(hostname).write"
 	DAY=$(date +%a)
 	MAN=$(date +%b)
 	DAYNR=$(date +%d)

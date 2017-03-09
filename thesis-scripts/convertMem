@@ -1,10 +1,10 @@
-#!/bin/bash 
+#!/bin/bash
 rm memMonitoring.txt
 while read NAME2; do
 	echo $NAME2 > temp1
 	VAL=$(awk '{print $1, $2}' temp1)
 	D=$(awk '{print $3}' temp1)
-	HOST="host1.memory"
+	HOST="$(hostname).memory"
 	DAY=$(date +%a)
 	MAN=$(date +%b)
 	DAYNR=$(date +%d)
