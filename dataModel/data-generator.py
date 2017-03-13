@@ -3,6 +3,7 @@ import datetime
 import time
 import random
 import sys
+import subprocess
 
 """ Amount of entries we create! """
 service_to_use = 0
@@ -29,14 +30,18 @@ def arg_t(argv):
 		exit()
 	else:
 		if argv[0] < 0: 
-			print "Usage ./data-generator.py <Integer>"
+			print "Usage ./data-generator.py <Integer>\nNo negatives!"
+			exit()
+		elif argv[0] > 5100000:
+			print "Usage ./data-generator.py <Integer>\nNumber is too big! \
+			5.000.000 is enough."
 			exit()
 		amt = argv[0]
 		return amt
 
 """ Service-unit defined """
 def create_service_unit():
-	serv_unit_ammount = random.randint(1, 50)
+	serv_unit_ammount = random.randint(46, 50000)
 	if service_to_use == 2:
 		serv_unit_unit = unit_of_measure_enum[2]
 	else:
@@ -173,13 +178,20 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 	return edr_table
 
 """ Writes the json entries to a file """
-def write_mocdata_to_a_file(edr_list_json):
-	file = open("mockdata.json", "w")
+def write_mocdata_to_a_file(edr_list_json, i):
+	bashCommand = "uname -n"
+	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+	output, error = process.communicate()
+	file = open("mockdata-%s-%d.json" % (output, i), "w")
 	file.write(edr_list_json)
+	file.close()
 
 """ Create database entries for testing, and handling the EDR list """
 def create_database_entries(argument):
+	split_amount = int(argument/3)
+	edr_arr = []
 	edr_list = []
+	edr_list_json = []
 	for i in range(0, argument):
 		edr_service = random.randint(1, 2)
 		set_global_var(edr_service)
@@ -187,8 +199,12 @@ def create_database_entries(argument):
 		edr_table = create_edr_table(create_event_details(), \
 			create_event_charges(service_unit_t), service_unit_t, edr_service)
 		edr_list.append(edr_table)
-	edr_list_json = """ %s """ % (edr_list)
-	edr_list_json = edr_list_json.replace("\'", "")
+		if len(edr_list) is split_amount:
+			edr_arr.append(edr_list)
+			edr_list = []
+	for mocdata_list in edr_arr:
+		edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
+	
 	return edr_list_json
 
 """ Assigns a value to the global variable """
@@ -200,11 +216,13 @@ def main(argv):
 	""" Starts the timer """
 	t0 = time.clock()
 	amount = arg_t(argv)
-	#t = datetime.datetime.now()
-	#print t
+	
 	""" Creates entries and writes them to a json file """
 	mocdata = create_database_entries(amount)
-	write_mocdata_to_a_file(mocdata)
+	i = 0
+	for entrys in mocdata:
+		write_mocdata_to_a_file(entrys, i)
+		i = i + 1
 
 	""" Stops the timer """
 	t1 = (time.clock() - t0)
@@ -212,7 +230,7 @@ def main(argv):
 
 """ Start of the program """
 if __name__ == "__main__":
-	main(sys.argv[1:])
+	main(sys.argv[1:2])
 
 
 
