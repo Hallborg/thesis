@@ -5,11 +5,8 @@ import com.datastax.driver.core.Cluster
   */
 class CassandraClientClass(var port: Int) {
   private val cluster = Cluster.builder()
-<<<<<<< HEAD
-    .addContactPoint("194.47.150.101") //"localhost"
-=======
+    //.addContactPoint("194.47.150.101") //"node 3"
     .addContactPoint("0.0.0.0") //"localhost"
->>>>>>> 630f713540485b1798c7f1d63b124ebabdbeae1e
     .withPort(port) // 9042 32776
     .build()
 

@@ -29,7 +29,7 @@ def arg_t(argv):
 		print "Usage ./data-generator.py <Integer>"
 		exit()
 	else:
-		if argv[0] < 0: 
+		if argv[0] < 0:
 			print "Usage ./data-generator.py <Integer>\nNo negatives!"
 			exit()
 		elif argv[0] > 5100000:
@@ -138,7 +138,7 @@ def create_event_details():
 "event_details": { "access_point_name": "%s", \
 "is_roaming": %s, "a_party_number": "%s", %s }\
 """ % (event_d_access_point_name, event_d_roaming, event_d_a_number, alocation)
-	
+
 	else:
 		event_d_traffic_case = traffic_case_enum[random.randint(0,2)]
 		event_d_b_number = str(random.randint(3000000000, 3069999999))
@@ -149,7 +149,7 @@ def create_event_details():
 "event_type": "%s", "is_roaming": %s, %s, "a_party_number": "%s" }\
 """ % (event_d_traffic_case, alocation, event_d_b_number, event_d_event_type, \
 		event_d_roaming, blocation, event_d_a_number)
-	
+
 	return event_details
 
 def gen_coordinates():
@@ -179,10 +179,10 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 
 """ Writes the json entries to a file """
 def write_mocdata_to_a_file(edr_list_json, i):
-	bashCommand = "uname -n"
-	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	output, error = process.communicate()
-	file = open("mockdata-%s-%d.json" % (output, i), "w")
+	#bashCommand = "uname -n"
+	#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+	#output, error = process.communicate()
+	file = open("mockdata-%d.json" % (i), "w")
 	file.write(edr_list_json)
 	file.close()
 
@@ -204,7 +204,7 @@ def create_database_entries(argument):
 			edr_list = []
 	for mocdata_list in edr_arr:
 		edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
-	
+
 	return edr_list_json
 
 """ Assigns a value to the global variable """
@@ -216,7 +216,7 @@ def main(argv):
 	""" Starts the timer """
 	t0 = time.clock()
 	amount = arg_t(argv)
-	
+
 	""" Creates entries and writes them to a json file """
 	mocdata = create_database_entries(amount)
 	i = 0
@@ -231,45 +231,3 @@ def main(argv):
 """ Start of the program """
 if __name__ == "__main__":
 	main(sys.argv[1:2])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

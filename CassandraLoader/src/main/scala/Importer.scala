@@ -1,16 +1,31 @@
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue,Json, JsObject}
 
 /**
   * Created by Hallborg on 2017-03-09.
   */
 object Importer {
 
-  def executeQuery(json: JsValue, con: CassandraClientClass): Unit = {
+  def executeWrite(json: JsValue, con: CassandraClientClass): Unit = {
     val json_part = check_service(json \ ("edr") \ ("service"), json)
-    //println(json_part)
-    con.execSession(
-      "INSERT INTO cdr.edr_by_id JSON '%s!'".format(json_part)
-    )
+    val json_dest_temp = Json.parse(json_part)
+    val json_dest: JsObject = json_dest_temp.as[JsObject] +
+      ("destination" -> json \ ("edr") \ ("event_details") \ ("a_party_location") \ ("destination"))
+
+    Seq(
+      "INSERT INTO cdr.edr_by_id JSON '%s!'".format(json_part),
+      "INSERT INTO cdr.edr_by_date JSON '%s!'".format(json_part),
+      "INSERT INTO cdr.edr_by_destination JSON '%s!'".format(json_dest),
+      "INSERT INTO cdr.edr_by_service JSON '%s!'".format(json_part)
+    ) foreach(con.execSession(_))
+  }
+
+  def executeRead(keys: List[String], con: CassandraClientClass): Unit = {
+    Seq(
+      "SELECT * FROM cdr.edr_by_id WHERE * = '%s!'".format(keys(0)),
+      "SELECT * FROM cdr.edr_by_destination WHERE * = '%s!'".format(keys(1)),
+      "SELECT * FROM cdr.edr_by_service WHERE * = '%s!'".format(keys(2)),
+      "SELECT * FROM cdr.edr_by_date WHERE * = '%s!'".format(keys(3))
+    ) foreach(con.execSession(_))
   }
 
   def check_service(service: JsValue, json: JsValue): String = {
