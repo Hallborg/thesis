@@ -5,7 +5,9 @@ import play.api.libs.json.{JsValue,Json, JsObject}
   */
 object Importer {
 
-  def executeWrite(json: JsValue, con: CassandraClientClass): Unit = {
+
+  def executeWrite(json: JsValue, con: CassandraClientClass, id_keeper: IdKeeper): Unit = {
+    id_keeper.populate_ids(json)
     val json_part = check_service(json \ ("edr") \ ("service"), json)
     val json_dest_temp = Json.parse(json_part)
     val json_dest: JsObject = json_dest_temp.as[JsObject] +
@@ -20,12 +22,13 @@ object Importer {
   }
 
   def executeRead(keys: List[String], con: CassandraClientClass): Unit = {
-    Seq(
-      "SELECT * FROM cdr.edr_by_id WHERE * = '%s!'".format(keys(0)),
-      "SELECT * FROM cdr.edr_by_destination WHERE * = '%s!'".format(keys(1)),
-      "SELECT * FROM cdr.edr_by_service WHERE * = '%s!'".format(keys(2)),
-      "SELECT * FROM cdr.edr_by_date WHERE * = '%s!'".format(keys(3))
-    ) foreach(con.execSession(_))
+    val quries = Seq(
+      ("SELECT * FROM cdr.edr_by_id WHERE id = %s".format(keys(0))),
+      ("SELECT * FROM cdr.edr_by_destination WHERE destination = %s").format(keys(1)),
+      ("SELECT * FROM cdr.edr_by_service WHERE service = %s".format(keys(2))),
+      ("SELECT * FROM cdr.edr_by_date WHERE started_at = %s".format(keys(3)))
+    )
+    quries map {s => s.replaceAll("\"", "\'")} foreach (con.execSession(_))
   }
 
   def check_service(service: JsValue, json: JsValue): String = {
@@ -47,4 +50,5 @@ object Importer {
     //val temp = json_string.replaceAll("-", "_")
     json_string.replace("\"event_details\"", "\"data_event\"")
   }
+
 }

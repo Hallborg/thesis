@@ -1,2 +1,8 @@
-alert text='Step-wise test started' 1489403558000000000
-alert text='Step-wise test stopped' 1489403559000000000
+alert text='Step-wise test -- writing -- started' 1489504911000000000
+alert text='Step-wise test -- writing -- stopped' 1489504911000000000
+alert text='Step-wise test -- reading -- started' 1489504911000000000
+alert text='Step-wise test -- reading -- stopped' 1489504912000000000
+alert text='Load test -- writing -- started' 1489505431000000000
+alert text='Load test -- writing -- ended' 1489505431000000000
+alert text='Load test -- reading -- started' 1489505431000000000
+alert text='Load test -- reading -- ended' 1489505431000000000
