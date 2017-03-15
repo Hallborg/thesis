@@ -26,4 +26,12 @@ class IdKeeper {
       started_at.toVector(rnd.nextInt(started_at.size))
     )
   }
+
+  def empty(): Unit = {
+    edr_ids.clear()
+    started_at.clear()
+    destinations.clear()
+    services.clear()
+
+  }
 }

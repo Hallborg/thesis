@@ -19,4 +19,12 @@ class CassandraClientClass(var port: Int) {
     session.close()
     cluster.close()
   }
+  def truncate() : Unit = {
+    Seq(
+      "TRUNCATE cdr.edr_by_id",
+      "TRUNCATE cdr.edr_by_service",
+      "TRUNCATE cdr.edr_by_destination",
+      "TRUNCATE cdr.edr_by_date"
+    ) foreach(session.execute(_))
+  }
 }
