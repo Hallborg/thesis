@@ -71,12 +71,11 @@ def create_charged_units(service_unit):
 
 """ Charge ammounts list handling """
 def create_charged_amounts():
-	counter = time.clock()
 	nr_of_charged_am = random.randint(1, 9)
 	charged_amounts_list = []
 	for i in range(0, nr_of_charged_am):
 		charged_amounts_amount = random.randint(50, 350)
-		charged_amounts_id = str(counter)
+		charged_amounts_id = str(gen_hex_code(5))
 		charged_amounts_endbalance = random.uniform(0.0, 2100.0)
 		charged_amounts_res_type = resource_type_enum[random.randint(0,3)]
 		charged_amounts_name = charged_type_enum[random.randint(0,2)]
