@@ -6,8 +6,8 @@ import java.io._
 /**
   * Created by Hallborg on 2017-03-09.
   */
-class Loader(setting: Int,thread_name: String, filePath: String, port: Int, id_keeper: IdKeeper) {
-  val con = new CassandraClientClass(port)
+class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_keeper: IdKeeper) {
+  val con = new CassandraClientClass(ip)
   val source: String = Source.fromFile(filePath).getLines.mkString
   val json_data: List[JsValue] = Json.parse(source).as[List[JsValue]]
 

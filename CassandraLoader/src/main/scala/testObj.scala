@@ -17,9 +17,9 @@ object testObj {
     //new Thread(new Loader(args(0).toInt, "../dataModel/mockdata-0.json", 53003, id_keeper)).start()
     //new Thread(new Loader(args(0).toInt, "../dataModel/mockdata-1.json", 53004, id_keeper)).join()
     //new Thread(new Loader(args(0).toInt, "../dataModel/mockdata-2.json", 53005, id_keeper)).join()
-    val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", 53003, id_keeper)
-    val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", 53004, id_keeper)
-    val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", 53005, id_keeper)
+    val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "192.168.46.11", id_keeper)
+    val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "192.168.46.12", id_keeper)
+    val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "192.168.46.13", id_keeper)
 
     val f1 = Future {
       l1.run_separate()

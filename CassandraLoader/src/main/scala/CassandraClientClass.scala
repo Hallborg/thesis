@@ -3,11 +3,11 @@ import com.datastax.driver.core.Cluster
 /**
   * Created by pps on 2017-02-23.
   */
-class CassandraClientClass(var port: Int) {
+class CassandraClientClass(var ip: String) {
   private val cluster = Cluster.builder()
     //.addContactPoint("194.47.150.101") //"node 3"
-    .addContactPoint("0.0.0.0") //"localhost"
-    .withPort(port) // 9042 32776
+    .addContactPoint(ip) //"localhost"
+    .withPort(9042) // 9042 32776
     .build()
 
   val session = cluster.connect()
