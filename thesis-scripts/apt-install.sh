@@ -1,9 +1,9 @@
-apt-get update;
-apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common;
+apt-get update -y;
+apt-get install -y \
+    apt-transport-https -y \
+    ca-certificates -y \
+    curl -y \
+    software-properties-common -y;
 
 # set up repositories
 
@@ -24,10 +24,24 @@ sudo add-apt-repository \
 echo "deb http://www.apache.org/dist/cassandra/debian 39x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list;
 curl https://www.apache.org/dist/cassandra/KEYS | apt-key add -;
 
-sudo apt-get update;
-apt-get install oracle-java8-installer;
-apt-get install cassandra;
+sudo apt-get update -y;
+apt-get install oracle-java8-installer -y;
+apt-get install cassandra -y;
 
-apt-get install docker-ce;
+apt-get install docker-ce -y;
 
-apt install lxc debootstrap bridge-utils;
+apt install lxc debootstrap bridge-utils -y;
+
+# Second phase of installation (lxc)
+
+echo "lxc.network.type = none" > /etc/lxc/default.conf;
+
+service lxc reload;
+lxc-create -t download -n $(hostname)-lxc -- -d debian -r jessie -a amd64;
+lxc-start -n $(hostname)-lxc -d;
+sleep 30;
+
+cat lxc-setup | lxc-attach -n $(hostname)-lxc;
+
+
+
