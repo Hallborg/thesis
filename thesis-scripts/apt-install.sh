@@ -14,17 +14,17 @@ echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main" | te
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886;
 
 # Docker
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -;
-sudo add-apt-repository \
+curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -;
+add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/debian \
    $(lsb_release -cs) \
    stable";
 
 # Cassandra
-echo "deb http://www.apache.org/dist/cassandra/debian 39x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list;
+echo "deb http://www.apache.org/dist/cassandra/debian 39x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list;
 curl https://www.apache.org/dist/cassandra/KEYS | apt-key add -;
 
-sudo apt-get update -y;
+apt-get update -y;
 apt-get install oracle-java8-installer -y;
 apt-get install cassandra -y;
 
