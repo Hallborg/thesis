@@ -2,7 +2,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR2="$DIR/../cassandra-models"
 
-docker run --name $(hostname)-docker -d --net=host -v $DIR2:/cassandra-models cassandra:3.9 #~/thesis/cassandra-models:/cassandra-models
+docker run --name $(hostname)-docker -d --net=host -e CASSANDRA_BROADCAST_ADDRESS=192.168.46.11 -v $DIR2:/cassandra-models cassandra:3.9 #~/thesis/cassandra-models:/cassandra-models
 sleep 60
 docker exec cont1 cqlsh -e "SOURCE '../cassandra-models/edr.cql'"
 #docker run --name cont2 -d -p 53004:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
