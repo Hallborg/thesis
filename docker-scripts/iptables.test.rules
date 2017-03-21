@@ -1,0 +1,3 @@
+# Allows Cassandra connections
+-A INPUT -p tcp --dport 7000 -j ACCEPT
+-A INPUT -p tcp --dport 9042 -j ACCEPT

@@ -2,17 +2,18 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DIR2="$DIR/../cassandra-models"
 
-docker run --name cont1 -d -p 53003:9042 -v $DIR2:/cassandra-models cassandra:3 #~/thesis/cassandra-models:/cassandra-models
+docker run --name $(hostname)-docker -d --net=host -v $DIR2:/cassandra-models cassandra:3.9 #~/thesis/cassandra-models:/cassandra-models
 sleep 60
-docker run --name cont2 -d -p 53004:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
-sleep 60
-docker run --name cont3 -d -p 53005:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont2)" cassandra:3
-sleep 30
-docker ps
-sleep 30
 docker exec cont1 cqlsh -e "SOURCE '../cassandra-models/edr.cql'"
-sleep 5
-docker exec -i -t cont1 sh -c 'nodetool status' # inspect clusters
+#docker run --name cont2 -d -p 53004:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
+#sleep 60
+#docker run --name cont3 -d -p 53005:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont2)" cassandra:3
+#sleep 30
+#docker ps
+#sleep 30
+
+#sleep 5
+#docker exec -i -t cont1 sh -c 'nodetool status' # inspect clusters
 
 #docker run --name cont1 -d -m 1g cassandra
 
