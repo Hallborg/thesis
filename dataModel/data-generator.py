@@ -178,12 +178,13 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 
 """ Writes the json entries to a file """
 def write_mocdata_to_a_file(edr_list_json, i):
-	#bashCommand = "uname -n"
-	#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	#output, error = process.communicate()
+	#print len(edr_list_json)
 	file = open("mockdata-%d.json" % (i), "w")
 	file.write(edr_list_json)
 	file.close()
+	#bashCommand = "uname -n"
+	#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+	#output, error = process.communicate()
 
 """ Create database entries for testing, and handling the EDR list """
 def create_database_entries(argument):
@@ -198,9 +199,10 @@ def create_database_entries(argument):
 		edr_table = create_edr_table(create_event_details(), \
 			create_event_charges(service_unit_t), service_unit_t, edr_service)
 		edr_list.append(edr_table)
-		if len(edr_list) is split_amount:
+		if int(len(edr_list)) == split_amount:
 			edr_arr.append(edr_list)
 			edr_list = []
+
 	for mocdata_list in edr_arr:
 		edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
 
@@ -222,7 +224,6 @@ def main(argv):
 	for entrys in mocdata:
 		write_mocdata_to_a_file(entrys, i)
 		i = i + 1
-
 	""" Stops the timer """
 	t1 = (time.clock() - t0)
 	print "Done! Time taken: %s sec" % (t1)
