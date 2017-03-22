@@ -24,11 +24,15 @@ object Importer {
   def executeRead(keys: List[String], con: CassandraClientClass): Unit = {
     val quries = Seq(
       ("SELECT * FROM cdr.edr_by_id WHERE id = %s".format(keys(0))),
-      ("SELECT * FROM cdr.edr_by_destination WHERE destination = %s").format(keys(1)),
-      ("SELECT * FROM cdr.edr_by_service WHERE service = %s".format(keys(2))),
+      ("SELECT * FROM cdr.edr_by_destination WHERE destination = %s and id < %s").format(keys(1),keys(0)),
+      ("SELECT * FROM cdr.edr_by_service WHERE service = %s and started_at < %s and started_at > %s".format(keys(2), keys(3), keys(4))),
       ("SELECT * FROM cdr.edr_by_date WHERE started_at = %s".format(keys(3)))
     )
     quries map {s => s.replaceAll("\"", "\'")} foreach (con.execSession(_))
+  }
+
+  def executeTestRead(con: CassandraClientClass):Unit = {
+    println (con.execSession("SELECT * FROM cdr.edr_by_id WHERE id = 'c3467876c7b41efc2dc9b8af0a5d56'"))
   }
 
   def check_service(service: JsValue, json: JsValue): String = {

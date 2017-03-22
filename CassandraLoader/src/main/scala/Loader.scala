@@ -17,7 +17,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
     if (setting == 0) {
       for (elem <- json_data) {
         Importer.executeWrite(elem, con, id_keeper)
-        if (nr_of_runs % 10000 == 0) println(thread_name + " handled : " + nr_of_runs)
+        if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
         nr_of_runs = nr_of_runs + 1
       }
 
@@ -25,6 +25,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
       start_date = "date +%s000000000" !!;
       for (i <- 0 to json_data.size) {
         Importer.executeRead(id_keeper.fetch_random(), con)
+        //Importer.executeTestRead(con)
+        if (i % 100 == 0) println(thread_name + " handled read: " + i)
       }
       save_time(start_date, "Load test -- reading -- started", "Load test -- reading -- ended")
 
@@ -76,6 +78,11 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
 
   }
 
+  def step_data_throughput() : Unit = {
+
+  }
+
+
   def step_write(json_data: List[JsValue], con: CassandraClientClass): Unit = {
 
     var start = 0
@@ -84,6 +91,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
       json_data.slice(start, end) foreach (Importer.executeWrite(_, con, id_keeper))
       start = end
       end = end * 2
+      //data_throughput(thread_name, "date +%s000000000" !!)
       Thread.sleep(500)
     }
     json_data.slice(start, json_data.size) foreach (Importer.executeWrite(_, con, id_keeper))

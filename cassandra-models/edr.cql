@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS cdr.edr_by_service (
     event_charges frozen<cdr.event_charges>,
     call_event frozen<call_event_details>,
     data_event frozen<data_event_details>,
-    PRIMARY KEY (service, id)
+    PRIMARY KEY (service, started_at)
 );
 
 CREATE TABLE IF NOT EXISTS cdr.edr_by_destination (
