@@ -163,7 +163,8 @@ def started_at_time():
 	mounth=random.randint(1, 12)
 	mounth_str=str(mounth)
 	if mounth < 10: mounth_str="0"+str(mounth)
-	day=random.randint(1, 30)
+	if mounth == 2: day=random.randint(1, 28)
+	else: day=random.randint(1, 30)
 	day_str = str(day)
 	if day < 10: day_str = "0"+str(day)
 	hour=random.randint(0, 23)
@@ -171,7 +172,6 @@ def started_at_time():
 	if hour < 10: hour_str = "0"+str(hour)
 	timestamp = "%s-%s-%sT%s:%s:%s" % (str(random.randint(2015, 2017)), mounth_str,\
 	day_str, hour_str, str(random.randint(10,59)), str(random.randint(10,59)))
-	print timestamp
 	return timestamp
 
 """ EDR table """
