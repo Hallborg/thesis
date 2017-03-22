@@ -12,10 +12,15 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
   val json_data: List[JsValue] = Json.parse(source).as[List[JsValue]]
 
   def run_separate(): CassandraClientClass = {
-
+    var nr_of_runs = 0
     var start_date = "date +%s000000000" !!;
     if (setting == 0) {
-      json_data.foreach(Importer.executeWrite(_, con, id_keeper))
+      for (elem <- json_data) {
+        Importer.executeWrite(elem, con, id_keeper)
+        if (nr_of_runs % 10000 == 0) println(thread_name + " handled : " + nr_of_runs)
+        nr_of_runs = nr_of_runs + 1
+      }
+
       save_time(start_date, "Load test -- writing -- started", "Load test -- writing -- ended")
       start_date = "date +%s000000000" !!;
       for (i <- 0 to json_data.size) {
