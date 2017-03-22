@@ -158,16 +158,33 @@ def gen_coordinates():
 def gen_hex_code(amount):
 	return ''.join([random.choice('0123456789abcdef') for x in range(amount)])
 
+""" Generate random timestamp """
+def started_at_time():
+	mounth=random.randint(1, 12)
+	mounth_str=str(mounth)
+	if mounth < 10: mounth_str="0"+str(mounth)
+	day=random.randint(1, 30)
+	day_str = str(day)
+	if day < 10: day_str = "0"+str(day)
+	hour=random.randint(0, 23)
+	hour_str = str(hour)
+	if hour < 10: hour_str = "0"+str(hour)
+	timestamp = "%s-%s-%sT%s:%s:%s" % (str(random.randint(2015, 2017)), mounth_str,\
+	day_str, hour_str, str(random.randint(10,59)), str(random.randint(10,59)))
+	print timestamp
+	return timestamp
+
 """ EDR table """
 def create_edr_table(event_details, event_charges, service_unit, edr_service_use):
 	edr_id = gen_hex_code(30) #"006ef78034fff173e2810863037702"
 	edr_service = str(edr_service_use)
-	edr_created_at = str(datetime.datetime.now()) #+str() #"2016-01-13T 14:33:37.000Z"
-	edr_created_at = edr_created_at[:19]
-	edr_created_at = edr_created_at.replace(" ", "T")
-	edr_started_at = str(datetime.datetime.now())
-	edr_started_at = edr_started_at[:19] #"2016-01-13T 14:33:37.000Z"
-	edr_started_at = edr_started_at.replace(" ", "T")
+	timestamp = started_at_time()
+	#edr_created_at = str(datetime.datetime.now()) #+str() #"2016-01-13T 14:33:37.000Z"
+	#edr_created_at = edr_created_at[:19]
+	edr_created_at = timestamp # edr_created_at.replace(" ", "T")
+	#edr_started_at = str(datetime.datetime.now())
+	#edr_started_at = edr_started_at[:19] #"2016-01-13T 14:33:37.000Z"
+	edr_started_at = timestamp # edr_started_at.replace(" ", "T")
 	edr = """\
 "edr": {"id": "%s", "service": "%s", %s, "created_at": "%s", "started_at": "%s", %s, %s }\
 """ % (edr_id, edr_service, event_details, edr_created_at, edr_started_at, event_charges, service_unit)
