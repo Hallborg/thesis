@@ -36,15 +36,15 @@ object testObj {
 
 
 
-    clear_keeper(Await.result(f1, 60 second), Await.result(f2, 60 second), Await.result(f3, 60 second), id_keeper)
+    clear_keeper(Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), id_keeper)
     println("main thread unblocked")
     val f4 = Future { l1.run_mix() }
     val f5 = Future { l2.run_mix() }
     val f6 = Future { l3.run_mix() }
 
-    val r1 = Await.result(f4, 60 second)
-    Await.result(f5, 60 second).closeCon()
-    Await.result(f6, 60 second).closeCon()
+    val r1 = Await.result(f4, 60 minute)
+    Await.result(f5, 60 minute).closeCon()
+    Await.result(f6, 60 minute).closeCon()
 
     Thread.sleep(5000)
     r1.truncate()
