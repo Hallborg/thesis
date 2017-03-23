@@ -1,0 +1,6 @@
+alert text='Load test -- writing -- started' 1490277935000000000
+alert text='Load test -- writing -- ended' 1490277960000000000
+alert text='Load test -- reading -- started' 1490277960000000000
+alert text='Load test -- reading -- ended' 1490277988000000000
+alert text='Load test -- mix -- started' 1490278017000000000
+alert text='Load test -- mix -- started' 1490278043000000000

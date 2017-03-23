@@ -48,7 +48,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
     var start_date = "date +%s000000000" !!;
     if (setting == 0) {
       var i = 0
-      for (i <- 0 to json_data.size) {
+      for (i <- 0 to json_data.size - 1) {
         if(i == 0) Importer.executeWrite(json_data(0), con, id_keeper)
         else if(i % 3 == 0) {
           Importer.executeRead(id_keeper.fetch_random(), con)
@@ -56,8 +56,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
         else {
           Importer.executeWrite(json_data(i), con, id_keeper)
         }
+        println(thread_name + " handled mix: " + i)
       }
       save_time(start_date, "Load test -- mix -- started", "Load test -- mix -- started")
+
     }
     else if(setting == 1) {
       step_mix(json_data, con)
