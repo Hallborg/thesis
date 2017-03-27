@@ -205,7 +205,7 @@ def write_mocdata_to_a_file(edr_list_json, i):
 
 """ Create database entries for testing, and handling the EDR list """
 def create_database_entries(argument):
-	split_amount = int(argument/3)
+	split_amount = int(argument/4)
 	edr_arr = []
 	edr_list = []
 	edr_list_json = []
