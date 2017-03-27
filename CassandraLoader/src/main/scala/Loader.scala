@@ -6,20 +6,28 @@ import java.io._
 /**
   * Created by Hallborg on 2017-03-09.
   */
-class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_keeper: IdKeeper) {
+class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
+  val id_keeper = new IdKeeper
   val con = new CassandraClientClass(ip)
   val source: String = Source.fromFile(filePath).getLines.mkString
   val json_data: List[JsValue] = Json.parse(source).as[List[JsValue]]
 
   def run_separate(): CassandraClientClass = {
-
+    var nr_of_runs = 0
     var start_date = "date +%s000000000" !!;
     if (setting == 0) {
-      json_data.foreach(Importer.executeWrite(_, con, id_keeper))
+      for (elem <- json_data) {
+        Importer.executeWrite(elem, con, id_keeper)
+        if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
+        nr_of_runs = nr_of_runs + 1
+      }
+
       save_time(start_date, "Load test -- writing -- started", "Load test -- writing -- ended")
       start_date = "date +%s000000000" !!;
       for (i <- 0 to json_data.size) {
         Importer.executeRead(id_keeper.fetch_random(), con)
+        //Importer.executeTestRead(con)
+        if (i % 100 == 0) println(thread_name + " handled read: " + i)
       }
       save_time(start_date, "Load test -- reading -- started", "Load test -- reading -- ended")
 
@@ -33,7 +41,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
       save_time(start_date, "Step-wise test -- reading -- started", "Step-wise test -- reading -- stopped")
 
     }
-
+    id_keeper.empty()
     con
   }
   def run_mix(): CassandraClientClass = {
@@ -41,7 +49,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
     var start_date = "date +%s000000000" !!;
     if (setting == 0) {
       var i = 0
-      for (i <- 0 to json_data.size) {
+      for (i <- 0 to json_data.size - 1) {
         if(i == 0) Importer.executeWrite(json_data(0), con, id_keeper)
         else if(i % 3 == 0) {
           Importer.executeRead(id_keeper.fetch_random(), con)
@@ -49,8 +57,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
         else {
           Importer.executeWrite(json_data(i), con, id_keeper)
         }
+        println(thread_name + " handled mix: " + i)
       }
       save_time(start_date, "Load test -- mix -- started", "Load test -- mix -- started")
+
     }
     else if(setting == 1) {
       step_mix(json_data, con)
@@ -71,6 +81,11 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
 
   }
 
+  def step_data_throughput() : Unit = {
+
+  }
+
+
   def step_write(json_data: List[JsValue], con: CassandraClientClass): Unit = {
 
     var start = 0
@@ -79,6 +94,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
       json_data.slice(start, end) foreach (Importer.executeWrite(_, con, id_keeper))
       start = end
       end = end * 2
+      //data_throughput(thread_name, "date +%s000000000" !!)
       Thread.sleep(500)
     }
     json_data.slice(start, json_data.size) foreach (Importer.executeWrite(_, con, id_keeper))

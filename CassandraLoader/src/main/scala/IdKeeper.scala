@@ -19,12 +19,14 @@ class IdKeeper {
 
   def fetch_random(): List[String] = {
     val rnd = new Random
-    List(
+    val t = List(
       edr_ids.toVector(rnd.nextInt(edr_ids.size)),
       destinations.toVector(rnd.nextInt(destinations.size)),
       services.toVector(rnd.nextInt(services.size)),
       started_at.toVector(rnd.nextInt(started_at.size))
     )
+    //println(edr_ids.size)
+    t
   }
 
   def empty(): Unit = {
