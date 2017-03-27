@@ -1,4 +1,4 @@
 #!/bin/sh
-docker stop cont3 cont2 cont1
+docker stop $(hostname)-docker
 
-docker rm cont1 cont2 cont3
+docker rm $(hostname)-docker
