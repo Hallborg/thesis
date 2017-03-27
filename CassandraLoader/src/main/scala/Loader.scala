@@ -6,7 +6,8 @@ import java.io._
 /**
   * Created by Hallborg on 2017-03-09.
   */
-class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_keeper: IdKeeper) {
+class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
+  val id_keeper = new IdKeeper
   val con = new CassandraClientClass(ip)
   val source: String = Source.fromFile(filePath).getLines.mkString
   val json_data: List[JsValue] = Json.parse(source).as[List[JsValue]]
@@ -40,7 +41,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, id_
       save_time(start_date, "Step-wise test -- reading -- started", "Step-wise test -- reading -- stopped")
 
     }
-
+    id_keeper.empty()
     con
   }
   def run_mix(): CassandraClientClass = {

@@ -10,7 +10,6 @@ import scala.concurrent.duration._
 object testObj {
 
   def main(args: Array[String]): Unit = {
-    val id_keeper = new IdKeeper
 
     // Running one thread at the moment. Waiting for three seperate files to load.
     // args(0), 0 is for full load, 1 is for step-wise load
@@ -20,10 +19,10 @@ object testObj {
     //val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "53005", id_keeper)
 
 
-    val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "192.168.46.11", id_keeper)
-    val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "192.168.46.11", id_keeper)
-    val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "192.168.46.11", id_keeper)
-    val l4 = new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-1.json", "192.168.46.11", id_keeper)
+    val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "192.168.46.11")
+    val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "192.168.46.11")
+    val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "192.168.46.11")
+    val l4 = new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-1.json", "192.168.46.11")
     
     val f1 = Future {
       l1.run_separate()
@@ -45,7 +44,7 @@ object testObj {
 
 
 
-    clear_keeper(Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), Await.result(f4, 60 minute), id_keeper)
+    clear_keeper(Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), Await.result(f4, 60 minute))
     println("main thread unblocked")
     val f11 = Future { l1.run_mix() }
     val f12 = Future { l2.run_mix() }
@@ -67,9 +66,8 @@ object testObj {
 
   }
   // need to wait for threads to complete
-  def clear_keeper(r1: CassandraClientClass, r2: CassandraClientClass, r3: CassandraClientClass, r4: CassandraClientClass, id_keeper: IdKeeper): Unit ={
+  def clear_keeper(r1: CassandraClientClass, r2: CassandraClientClass, r3: CassandraClientClass, r4: CassandraClientClass): Unit ={
     println("Truncating database")
-    id_keeper.empty()
     r1.truncate()
     Thread.sleep(5000)
   }
