@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+
 import matplotlib.pyplot as plt
 import sys
 
@@ -29,4 +31,5 @@ plt.plot(
     axis_holder[0],axis_holder[3],'g--'
     )
 plt.ylabel('some numbers')
+plt.xlabel('Time elapsed')
 plt.show()

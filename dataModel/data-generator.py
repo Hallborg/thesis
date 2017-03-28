@@ -4,6 +4,7 @@ import time
 import random
 import sys
 import subprocess
+import os
 
 """ Amount of entries we create! """
 service_to_use = 0
@@ -195,8 +196,8 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 
 """ Writes the json entries to a file """
 def write_mocdata_to_a_file(edr_list_json, i):
-	#print len(edr_list_json)
-	file = open("mockdata-%d.json" % (i), "w")
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	file = open("%s/mockdata-%d.json" % (str(dir_path),i), "w")
 	file.write(edr_list_json)
 	file.close()
 	#bashCommand = "uname -n"
