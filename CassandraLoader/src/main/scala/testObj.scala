@@ -1,7 +1,7 @@
 import scala.concurrent
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
-import scala.util.Success
+import sys.process._
 import scala.concurrent.duration._
 /**
   * Created by pps on 2017-02-09.
@@ -14,15 +14,17 @@ object testObj {
     // Running one thread at the moment. Waiting for three seperate files to load.
     // args(0), 0 is for full load, 1 is for step-wise load
 
-    //val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "53003", id_keeper)
-    //val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "53004", id_keeper)
-    //val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "53005", id_keeper)
+    println(args(0), args(1), args(2))
+    println("python ~/thesis/dataModel/data-generator.py %s".format(args(2)) !!)
+    //val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "53003")
+    //val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "53004")
+    //val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "53005")
+    //val l4 = new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-3.json", "53005")
 
-
-    val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "192.168.46.11")
-    val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "192.168.46.11")
-    val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "192.168.46.11")
-    val l4 = new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-1.json", "192.168.46.11")
+    val l1 = new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0.json", args(1))
+    val l2 = new Loader(args(0).toInt,"Thread-2", "~/thesis/dataModel/mockdata-1.json", args(1))
+    val l3 = new Loader(args(0).toInt,"Thread-3", "~/thesis/dataModel/mockdata-2.json", args(1))
+    val l4 = new Loader(args(0).toInt,"Thread-4", "~/thesis/dataModel/mockdata-3.json", args(1))
     
     val f1 = Future {
       l1.run_separate()
