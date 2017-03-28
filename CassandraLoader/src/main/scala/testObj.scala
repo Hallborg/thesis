@@ -13,9 +13,10 @@ object testObj {
 
     // Running one thread at the moment. Waiting for three seperate files to load.
     // args(0), 0 is for full load, 1 is for step-wise load
-
-    println(args(0), args(1), args(2))
-    println("python ~/thesis/dataModel/data-generator.py %s".format(args(2)) !!)
+    
+    if ( args.size == 3 ) {
+      println("python ~/thesis/dataModel/data-generator.py %s".format(args(2)) !!)
+    }
     //val l1 = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0.json", "53003")
     //val l2 = new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1.json", "53004")
     //val l3 = new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2.json", "53005")
