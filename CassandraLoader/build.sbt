@@ -35,7 +35,15 @@ dockerfile in docker := {
     // Add the JAR file
     add(jarFile, jarTarget)
     // On launch run Java with the classpath and the main class
-    entryPoint("java", "-cp", classpathString, mainclass)
+    entryPoint("java",
+      "-Dcom.sun.management.jmxremote",
+      "-Dcom.sun.management.jmxremote.port=7199",
+      "-Dcom.sun.management.jmxremote.local.only=false",
+      "-Dcom.sun.management.jmxremote.authenticate=false",
+      "-Dcom.sun.management.jmxremote.ssl=false",
+      "-Dcom.sun.management.jmxremote.rmi.port=5998",
+      "-cp",
+      classpathString, mainclass)
   }
 
 }

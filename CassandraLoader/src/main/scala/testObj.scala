@@ -3,6 +3,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 import sys.process._
 import scala.concurrent.duration._
+import java.util.Scanner;
 /**
   * Created by pps on 2017-02-09.
   */
@@ -14,9 +15,14 @@ object testObj {
     // Running one thread at the moment. Waiting for three seperate files to load.
     // args(0), 0 is for full load, 1 is for step-wise load
 
+    val scan = new Scanner(System.in);
+
+	  println("start by typing something")
+	  scan.nextLine()
+
     val loaders = create_loaders(args)
 
-    
+
     val f1 = Future {
       loaders(0).run_separate()
     }
@@ -43,7 +49,7 @@ object testObj {
     val f12 = Future { loaders(1).run_mix() }
     val f13 = Future { loaders(2).run_mix() }
     val f14 = Future { loaders(3).run_mix() }
-   
+
     val r1 = Await.result(f11, 60 minute)
     Await.result(f12, 60 minute).closeCon()
     Await.result(f13, 60 minute).closeCon()
