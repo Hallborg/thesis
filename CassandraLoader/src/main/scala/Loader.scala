@@ -121,7 +121,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
       start = end + 1
       end = start + INC_AMOUNT * i - 1
       i += 1
-      Thread.sleep(500)
+      Thread.sleep(3000)
     }
     /*for (i <- start to json_data.size) {
       Importer.executeRead(id_keeper.fetch_random(), con)
@@ -147,7 +147,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
       start = end + 1
       end = start + INC_AMOUNT * i - 1
       i += 1
-      Thread.sleep(500)
+      Thread.sleep(3000)
 
     }
 
