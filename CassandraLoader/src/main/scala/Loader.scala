@@ -90,16 +90,18 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
 
 
   def step_write(json_data: List[JsValue], con: CassandraClientClass): Unit = {
-
-    var start = 2
-    var end = 4
+    val INC_AMOUNT = 32
+    var start = 0
+    var end = 31
+    var i = 2
     while (end <= json_data.size) {
       json_data.slice(start, end) foreach (Importer.executeWrite(_, con, id_keeper))
-      println(thread_name + " step_wrote: " + (end-start))
-      start = end
-      end = end * 2
+      println(thread_name + " step_wrote: " + ((end-start) + 1))
+      start = end + 1
+      end = start + INC_AMOUNT * i - 1
+      i += 1
       //data_throughput(thread_name, "date +%s000000000" !!)
-      Thread.sleep(500)
+      Thread.sleep(3000)
     }
     /*json_data.slice(start, json_data.size) foreach (Importer.executeWrite(_, con, id_keeper))
     println(thread_name + " step_wrote: " + (end-start))*/
@@ -108,14 +110,17 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
 
   }
   def step_read(json_data: List[JsValue], con: CassandraClientClass): Unit = {
-    var start = 2
-    var end = 4
+    val INC_AMOUNT = 32
+    var start = 0
+    var end = 31
+    var i = 2
     while (end <= json_data.size) {
       for (i <- 0 to (end-start)) Importer.executeRead(id_keeper.fetch_random(), con)
-      println(thread_name + " step_read: " + (end-start))
-      start = end
-      end = end * 2
+      println(thread_name + " step_read: " + ((end-start) + 1))
 
+      start = end + 1
+      end = start + INC_AMOUNT * i - 1
+      i += 1
       Thread.sleep(500)
     }
     /*for (i <- start to json_data.size) {
@@ -127,8 +132,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   }
 
   def step_mix(json_data: List[JsValue], con: CassandraClientClass): Unit = {
-    var start = 2
-    var end = 4
+    val INC_AMOUNT = 32
+    var start = 0
+    var end = 31
+    var i = 2
 
     while (end <= json_data.size) {
       for (i <- start to end) {
@@ -136,9 +143,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         else if(i % 3 == 0) Importer.executeRead(id_keeper.fetch_random(), con)
         else Importer.executeWrite(json_data(i -1), con, id_keeper)
       }
-      println(thread_name + " step_mix: " + (end-start))
-      start = end
-      end = end * 2
+      println(thread_name + " step_mix: " + ((end-start) + 1))
+      start = end + 1
+      end = start + INC_AMOUNT * i - 1
+      i += 1
       Thread.sleep(500)
 
     }
