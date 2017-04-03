@@ -3,7 +3,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Await, Future}
 import sys.process._
 import scala.concurrent.duration._
-import java.util.Scanner;
+import java.util.Scanner
+
+import scala.io.Source;
 /**
   * Created by pps on 2017-02-09.
   */
@@ -14,6 +16,8 @@ object testObj {
 
     // Running one thread at the moment. Waiting for three seperate files to load.
     // args(0), 0 is for full load, 1 is for step-wise load
+
+
 
     val scan = new Scanner(System.in);
 

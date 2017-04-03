@@ -9,39 +9,16 @@ import java.io._
 class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   val id_keeper = new IdKeeper
   val con = new CassandraClientClass(ip)
-  val source: String = Source.fromFile(filePath).getLines.mkString
-  val json_data: List[JsValue] = Json.parse(source).as[List[JsValue]]
 
   def run_separate(): CassandraClientClass = {
-    var nr_of_runs = 0
-    //var start_date = "date +%s000000000" !!;
-    if (setting == 0) {
-      for (elem <- json_data) {
-        Importer.executeWrite(elem, con, id_keeper)
-        if (nr_of_runs % 1000 == 0) println(thread_name + " handled write: " + nr_of_runs)
-        nr_of_runs = nr_of_runs + 1
-      }
-      println(thread_name + "completed writing, sleeping 10s")
-      Thread.sleep(10000)
-      //save_time(start_date, "Load test -- writing -- started", "Load test -- writing -- ended")
-      //start_date = "date +%s000000000" !!;
-      for (i <- 0 to json_data.size) {
-        Importer.executeRead(id_keeper.fetch_random(), con)
-        //Importer.executeTestRead(con)
-        if (i % 1000 == 0) println(thread_name + " handled read: " + i)
-      }
-      //save_time(start_date, "Load test -- reading -- started", "Load test -- reading -- ended")
-      println(thread_name + "completed reading, sleeping 10s")
-      Thread.sleep(10000)
 
+    if (setting == 0) {
+      write()
+      read()
     }
     else if (setting == 1) {
-      step_write(json_data, con)
-      //save_time(start_date, "Step-wise test -- writing -- started", "Step-wise test -- writing -- stopped")
-      //start_date = "date +%s000000000" !!;
-      step_read(json_data, con)
-      //save_time(start_date, "Step-wise test -- reading -- started", "Step-wise test -- reading -- stopped")
-
+      step_write(con)
+      step_read(con)
     }
     id_keeper.empty()
 
@@ -49,30 +26,25 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   }
   def run_mix(): CassandraClientClass = {
 
-    //var start_date = "date +%s000000000" !!;
+    val it = Source.fromFile(filePath).getLines
     if (setting == 0) {
       var i = 0
-      for (i <- 0 to json_data.size - 1) {
-        if(i == 0) Importer.executeWrite(json_data(0), con, id_keeper)
+      for (elem <- it) {
+        if(i == 0) Importer.executeWrite(Json.parse(elem), con, id_keeper)
         else if(i % 3 == 0) {
           Importer.executeRead(id_keeper.fetch_random(), con)
         }
         else {
-          Importer.executeWrite(json_data(i), con, id_keeper)
+          Importer.executeWrite(Json.parse(elem), con, id_keeper)
         }
-        if (i % 1000 == 0) {
+        if (i % 100 == 0) {
           println(thread_name + " handled mix: " + i)
         }
-
+        i = i + 1
       }
-      //save_time(start_date, "Load test -- mix -- started", "Load test -- mix -- started")
 
     }
-    else if(setting == 1) {
-      step_mix(json_data, con)
-      //save_time(start_date, "Step-wise test -- mix -- started", "Step-wise test -- mix -- started")
-
-    }
+    else if(setting == 1) step_mix(con)
     con
 
   }
@@ -89,69 +61,114 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
 
 
 
-  def step_write(json_data: List[JsValue], con: CassandraClientClass): Unit = {
+  def step_write(con: CassandraClientClass): Unit = {
+    val it = Source.fromFile(filePath).getLines
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
-    var i = 2
-    while (end <= json_data.size) {
-      json_data.slice(start, end) foreach (Importer.executeWrite(_, con, id_keeper))
-      println(thread_name + " step_wrote: " + ((end-start) + 1))
-      start = end + 1
-      end = start + INC_AMOUNT * i - 1
-      i += 1
-      //data_throughput(thread_name, "date +%s000000000" !!)
-      Thread.sleep(3000)
+    var objects = new scala.collection.mutable.Queue[JsValue]
+
+    for (elem <- it) {
+      if ( start <= end) {
+        start = start + 1
+        objects.enqueue(Json.parse(elem))
+      }
+      else {
+        for (e <- objects) Importer.executeWrite(e, con, id_keeper)
+
+        start = 0
+        println(thread_name + " step_wrote: " + (end + 1))
+        end = end + INC_AMOUNT
+
+        Thread.sleep(3000)
+      }
     }
-    /*json_data.slice(start, json_data.size) foreach (Importer.executeWrite(_, con, id_keeper))
-    println(thread_name + " step_wrote: " + (end-start))*/
     println(thread_name + " completed writing, sleeping 10s")
     Thread.sleep(10000)
 
   }
-  def step_read(json_data: List[JsValue], con: CassandraClientClass): Unit = {
+  def step_read( con: CassandraClientClass): Unit = {
+    val it = Source.fromFile(filePath).getLines
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
-    var i = 2
-    while (end <= json_data.size) {
-      for (i <- 0 to (end-start)) Importer.executeRead(id_keeper.fetch_random(), con)
-      println(thread_name + " step_read: " + ((end-start) + 1))
+    var objects = new scala.collection.mutable.Queue[JsValue]
 
-      start = end + 1
-      end = start + INC_AMOUNT * i - 1
-      i += 1
-      Thread.sleep(3000)
+    for (elem <- it) {
+      if ( start <= end) {
+        start = start + 1
+        objects.enqueue(Json.parse(elem))
+      }
+      else {
+        for (i <- 0 to objects.size) Importer.executeRead(id_keeper.fetch_random(), con)
+        start = 0
+        println(thread_name + " step_read: " + (end + 1))
+        end = end + INC_AMOUNT
+
+        Thread.sleep(3000)
+      }
+
     }
-    /*for (i <- start to json_data.size) {
-      Importer.executeRead(id_keeper.fetch_random(), con)
-    }
-    println(thread_name + " step_wrote: " + (end-start))*/
+
     println(thread_name + " completed reading, sleeping 10s")
     Thread.sleep(10000)
   }
 
-  def step_mix(json_data: List[JsValue], con: CassandraClientClass): Unit = {
+  def step_mix(con: CassandraClientClass): Unit = {
+    val it = Source.fromFile(filePath).getLines
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
-    var i = 2
+    var objects = new scala.collection.mutable.Queue[JsValue]
 
-    while (end <= json_data.size) {
-      for (i <- start to end) {
-        if (i == 0) Importer.executeWrite(json_data(0), con, id_keeper)
-        else if(i % 3 == 0) Importer.executeRead(id_keeper.fetch_random(), con)
-        else Importer.executeWrite(json_data(i -1), con, id_keeper)
+    for (elem <- it) {
+      if ( start <= end) {
+        start = start + 1
+        objects.enqueue(Json.parse(elem))
       }
-      println(thread_name + " step_mix: " + ((end-start) + 1))
-      start = end + 1
-      end = start + INC_AMOUNT * i - 1
-      i += 1
-      Thread.sleep(3000)
+      else {
+        for (i <- 0 to objects.size) {
+          if (i == 0) Importer.executeWrite(objects.dequeue(), con, id_keeper)
+          else if(i % 3 == 0) Importer.executeRead(id_keeper.fetch_random(), con)
+          else Importer.executeWrite(objects.dequeue(), con, id_keeper)
+        }
+        start = 0
+        println(thread_name + " step_mix: " + (end + 1))
+        end = end + INC_AMOUNT
+
+        Thread.sleep(3000)
+
+      }
 
     }
 
     println(thread_name + " completed step_reading, sleeping 10s")
     Thread.sleep(10000)
   }
+
+  def write(): Unit = {
+    val source = Source.fromFile(filePath).getLines
+    var nr_of_runs = 0
+    for (elem <- source) {
+      Importer.executeWrite(Json.parse(elem), con, id_keeper)
+      if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
+      nr_of_runs = nr_of_runs + 1
+    }
+    println(thread_name + "completed writing, sleeping 10s")
+    Thread.sleep(10000)
+
+  }
+
+  def read(): Unit = {
+    val it_s = Source.fromFile(filePath).getLines.size
+    for (i <- 0 to it_s) {
+      Importer.executeRead(id_keeper.fetch_random(), con)
+      //Importer.executeTestRead(con)
+      if (i % 100 == 0) println(thread_name + " handled read: " + i)
+    }
+    //save_time(start_date, "Load test -- reading -- started", "Load test -- reading -- ended")
+    println(thread_name + "completed reading, sleeping 10s")
+    Thread.sleep(10000)
+  }
+
 }
