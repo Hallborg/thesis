@@ -4,11 +4,11 @@ import scala.util.Random
   * Created by Hallborg on 2017-03-14.
   */
 class IdKeeper {
-  val edr_ids = scala.collection.mutable.Set[String]()
-  val started_at = scala.collection.mutable.Set[String]()
-  val destinations = scala.collection.mutable.Set[String]()
-  val services = scala.collection.mutable.Set[String]()
-
+  val edr_ids = scala.collection.mutable.ArrayBuffer[String]()
+  val started_at = scala.collection.mutable.ArrayBuffer[String]()
+  val destinations = scala.collection.mutable.ArrayBuffer[String]()
+  val services = scala.collection.mutable.ArrayBuffer[String]()
+  val rnd = new Random
 
   def populate_ids(json:JsValue): Unit = {
     edr_ids += (json \ ("edr") \ ("id")).toString()
@@ -18,15 +18,12 @@ class IdKeeper {
   }
 
   def fetch_random(): List[String] = {
-    val rnd = new Random
-    val t = List(
-      edr_ids.toVector(rnd.nextInt(edr_ids.size)),
-      destinations.toVector(rnd.nextInt(destinations.size)),
-      services.toVector(rnd.nextInt(services.size)),
-      started_at.toVector(rnd.nextInt(started_at.size))
+    List(
+      edr_ids(rnd.nextInt(edr_ids.size)),
+      destinations(rnd.nextInt(destinations.size)),
+      services(rnd.nextInt(services.size)),
+      started_at(rnd.nextInt(started_at.size))
     )
-    //println(edr_ids.size)
-    t
   }
 
   def empty(): Unit = {
