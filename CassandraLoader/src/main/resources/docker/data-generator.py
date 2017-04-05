@@ -197,8 +197,10 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 """ Writes the json entries to a file """
 def write_mocdata_to_a_file(edr_list_json, i):
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	file = open("%s/mockdata-%d.json" % (str(dir_path),i), "w")
-	file.write(edr_list_json)
+	file = open("%s/../dataModel/mockdata-%d.json" % (str(dir_path),i), "w")
+	#print edr_list_json
+	for item in edr_list_json:
+		file.write(item + "\n")
 	file.close()
 	#bashCommand = "uname -n"
 	#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
@@ -216,15 +218,17 @@ def create_database_entries(argument):
 		service_unit_t = create_service_unit()
 		edr_table = create_edr_table(create_event_details(), \
 			create_event_charges(service_unit_t), service_unit_t, edr_service)
+
 		edr_list.append(edr_table)
 		if int(len(edr_list)) == split_amount:
 			edr_arr.append(edr_list)
 			edr_list = []
 
-	for mocdata_list in edr_arr:
-		edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
 
-	return edr_list_json
+	#for mocdata_list in edr_arr:
+		#edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
+
+	return edr_arr
 
 """ Assigns a value to the global variable """
 def set_global_var(value):
