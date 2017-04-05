@@ -37,9 +37,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         else {
           Importer.executeWrite(Json.parse(elem), con, id_keeper)
         }
-        if (i % 100 == 0) {
-          println(thread_name + " handled mix: " + i)
-        }
+        //if (i % 100 == 0) {
+          //println(thread_name + " handled mix: " + i)
+        //}
         i = i + 1
       }
 
@@ -157,8 +157,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     var nr_of_runs = 0
     for (elem <- source) {
       Importer.executeWrite(Json.parse(elem), con, id_keeper)
-      if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
-      nr_of_runs = nr_of_runs + 1
+      //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
+      //nr_of_runs = nr_of_runs + 1
     }
     println(thread_name + "completed writing, sleeping 10s")
     Thread.sleep(10000)
@@ -170,7 +170,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     for (i <- 0 to it_s) {
       Importer.executeRead(id_keeper.fetch_random(), con)
       //Importer.executeTestRead(con)
-      if (i % 100 == 0) println(thread_name + " handled read: " + i)
+      //if (i % 100 == 0) println(thread_name + " handled read: " + i)
     }
     //save_time(start_date, "Load test -- reading -- started", "Load test -- reading -- ended")
     println(thread_name + "completed reading, sleeping 10s")
