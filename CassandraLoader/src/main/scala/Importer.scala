@@ -8,16 +8,14 @@ object Importer {
 
   def executeWrite(json: JsValue, con: CassandraClientClass, id_keeper: IdKeeper): Unit = {
     id_keeper.populate_ids(json)
-    val json_part = check_service(json \ ("edr") \ ("service"), json)
-    val json_dest_temp = Json.parse(json_part)
-    val json_dest: JsObject = json_dest_temp.as[JsObject] +
+    val json_dest: JsObject = json.as[JsObject] +
       ("destination" -> json \ ("edr") \ ("event_details") \ ("a_party_location") \ ("destination"))
 
     Seq(
-      "INSERT INTO cdr.edr_by_id JSON '%s!'".format(json_part),
-      "INSERT INTO cdr.edr_by_date JSON '%s!'".format(json_part),
-      "INSERT INTO cdr.edr_by_destination JSON '%s!'".format(json_dest),
-      "INSERT INTO cdr.edr_by_service JSON '%s!'".format(json_part)
+      "INSERT INTO cdr.edr_by_id JSON '%s!'".format(json),
+      "INSERT INTO cdr.edr_by_date JSON '%s!'".format(json),
+      "INSERT INTO cdr.edr_by_destination JSON '%s!'".format(json),
+      "INSERT INTO cdr.edr_by_service JSON '%s!'".format(json)
     ) foreach(con.execSession(_))
   }
 
@@ -33,26 +31,6 @@ object Importer {
 
   def executeTestRead(con: CassandraClientClass):Unit = {
     println (con.execSession("SELECT * FROM cdr.edr_by_id WHERE id = 'c3467876c7b41efc2dc9b8af0a5d56'"))
-  }
-
-  def check_service(service: JsValue, json: JsValue): String = {
-    convert(service) match { //convert(service)
-      case 1 => call_event(json)
-      case 2 => data_event(json)
-    }
-  }
-  def convert(value: JsValue): Int = {
-    value.as[String].toInt
-  }
-  def call_event(json: JsValue): String = {
-    val json_string = (json\("edr")).toString()
-    //val temp = json_string.replaceAll("-", "_")
-    json_string.replace("\"event_details\"", "\"call_event\"")
-  }
-  def data_event(json: JsValue): String = {
-    val json_string = (json\("edr")).toString()
-    //val temp = json_string.replaceAll("-", "_")
-    json_string.replace("\"event_details\"", "\"data_event\"")
   }
 
 }

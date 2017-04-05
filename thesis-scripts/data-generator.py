@@ -135,7 +135,7 @@ def create_event_details():
 	if service_to_use == 2:
 		event_d_access_point_name = access_point_name_enum[random.randint(0,8)]
 		event_details = """\
-"event_details": { "access_point_name": "%s", \
+"data_event": { "access_point_name": "%s", \
 "is_roaming": %s, "a_party_number": "%s", %s }\
 """ % (event_d_access_point_name, event_d_roaming, event_d_a_number, alocation)
 
@@ -145,7 +145,7 @@ def create_event_details():
 		blocation = create_b_location()
 		event_d_event_type = event_type_enum[random.randint(0,3)]
 		event_details = """\
-"event_details": {"traffic_case": "%s", %s, "b_party_number": "%s", \
+"call_event": {"traffic_case": "%s", %s, "b_party_number": "%s", \
 "event_type": "%s", "is_roaming": %s, %s, "a_party_number": "%s" }\
 """ % (event_d_traffic_case, alocation, event_d_b_number, event_d_event_type, \
 		event_d_roaming, blocation, event_d_a_number)
@@ -218,6 +218,7 @@ def create_database_entries(argument):
 		service_unit_t = create_service_unit()
 		edr_table = create_edr_table(create_event_details(), \
 			create_event_charges(service_unit_t), service_unit_t, edr_service)
+
 
 		edr_list.append(edr_table)
 		if int(len(edr_list)) == split_amount:
