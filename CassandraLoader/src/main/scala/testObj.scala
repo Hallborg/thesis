@@ -72,7 +72,7 @@ object testObj {
   def clear_keeper(r1: CassandraClientClass, r2: CassandraClientClass, r3: CassandraClientClass, r4: CassandraClientClass): Unit ={
     println("Truncating database")
     r1.truncate()
-    Thread.sleep(5000)
+    Thread.sleep(20000)
   }
 
   def create_loaders(args: Array[String]): List[Loader] = {

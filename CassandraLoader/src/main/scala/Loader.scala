@@ -66,6 +66,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
+    var i = 0
     var objects = new scala.collection.mutable.Queue[JsValue]
 
     for (elem <- it) {
@@ -80,11 +81,12 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         println(thread_name + " step_wrote: " + (end + 1))
         end = end + INC_AMOUNT
 
-        Thread.sleep(3000)
+        Thread.sleep(10000 + i * 1000)
+	i = i + 1
       }
     }
-    println(thread_name + " completed writing, sleeping 10s")
-    Thread.sleep(10000)
+    println(thread_name + " completed writing, sleeping 20s")
+    Thread.sleep(20000)
 
   }
   def step_read( con: CassandraClientClass): Unit = {
@@ -92,6 +94,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
+    var i = 0
     var objects = new scala.collection.mutable.Queue[JsValue]
 
     for (elem <- it) {
@@ -105,13 +108,14 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         println(thread_name + " step_read: " + (end + 1))
         end = end + INC_AMOUNT
 
-        Thread.sleep(3000)
+        Thread.sleep(10000 + i * 1000)
+	i = i + 1
       }
 
     }
 
-    println(thread_name + " completed reading, sleeping 10s")
-    Thread.sleep(10000)
+    println(thread_name + " completed reading, sleeping 20s")
+    Thread.sleep(20000)
   }
 
   def step_mix(con: CassandraClientClass): Unit = {
@@ -119,6 +123,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
+    var i = 0
     var objects = new scala.collection.mutable.Queue[JsValue]
 
     for (elem <- it) {
@@ -136,14 +141,15 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         println(thread_name + " step_mix: " + (end + 1))
         end = end + INC_AMOUNT
 
-        Thread.sleep(3000)
+        Thread.sleep(10000 + i * 1000)
+	i = i + 1
 
       }
 
     }
 
-    println(thread_name + " completed step_reading, sleeping 10s")
-    Thread.sleep(10000)
+    println(thread_name + " completed step_reading, sleeping 20s")
+    Thread.sleep(20000)
   }
 
   def write(): Unit = {
