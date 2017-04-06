@@ -187,17 +187,17 @@ def create_edr_table(event_details, event_charges, service_unit, edr_service_use
 	#edr_started_at = edr_started_at[:19] #"2016-01-13T 14:33:37.000Z"
 	edr_started_at = timestamp # edr_started_at.replace(" ", "T")
 	edr = """\
-"edr": {"id": "%s", "service": "%s", %s, "created_at": "%s", "started_at": "%s", %s, %s }\
+{"id": "%s", "service": "%s", %s, "created_at": "%s", "started_at": "%s", %s, %s }\
 """ % (edr_id, edr_service, event_details, edr_created_at, edr_started_at, event_charges, service_unit)
 
 	""" Table handling """
-	edr_table = """{%s}""" % (edr)
+	edr_table = """%s""" % (edr)
 	return edr_table
 
 """ Writes the json entries to a file """
 def write_mocdata_to_a_file(edr_list_json, i):
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	file = open("%s/../dataModel/mockdata-%d.json" % (str(dir_path),i), "w")
+	file = open("%s/../dataModel/mockdata-%d" % (str(dir_path),i), "w")
 	#print edr_list_json
 	for item in edr_list_json:
 		file.write(item + "\n")
