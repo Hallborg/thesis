@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS cdr.edr_by_id (
     call_event frozen<call_event_details>,
     data_event frozen<data_event_details>
 );
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_id (started_at);
 
 CREATE TABLE IF NOT EXISTS cdr.edr_by_date (
     id TEXT,
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS cdr.edr_by_date (
     data_event frozen<data_event_details>,
     PRIMARY KEY (started_at, id)
 );
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_date (created_at);
 
 CREATE TABLE IF NOT EXISTS cdr.edr_by_service (
     id TEXT,
@@ -86,6 +88,7 @@ CREATE TABLE IF NOT EXISTS cdr.edr_by_service (
     data_event frozen<data_event_details>,
     PRIMARY KEY (service, started_at)
 );
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_service (created_at);
 
 CREATE TABLE IF NOT EXISTS cdr.edr_by_destination (
     id TEXT,
@@ -99,3 +102,30 @@ CREATE TABLE IF NOT EXISTS cdr.edr_by_destination (
     data_event frozen<data_event_details>,
     PRIMARY KEY (destination, id)
 );
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_destination (started_at);
+
+CREATE TABLE IF NOT EXISTS cdr.edr_by_date2 (
+    id TEXT,
+    service TEXT,
+    created_at TIMESTAMP,
+    started_at TIMESTAMP,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
+    call_event frozen<call_event_details>,
+    data_event frozen<data_event_details>,
+    PRIMARY KEY (created_at, id)
+);
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_date2 (started_at);
+
+CREATE TABLE IF NOT EXISTS cdr.edr_by_id2 (
+    id TEXT,
+    service TEXT,
+    created_at TIMESTAMP,
+    started_at TIMESTAMP,
+    service_units frozen<cdr.service_units>,
+    event_charges frozen<cdr.event_charges>,
+    call_event frozen<call_event_details>,
+    data_event frozen<data_event_details>,
+    PRIMARY KEY (id, created_at)
+);
+CREATE INDEX IF NOT EXISTS ON cdr.edr_by_id2 (started_at);

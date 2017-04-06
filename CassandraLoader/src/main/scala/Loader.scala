@@ -161,7 +161,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     var nr_of_runs = 0
     for (elem <- source) {
       Importer.executeWrite(Json.parse(elem), con)
-      if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
+      //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
       nr_of_runs = nr_of_runs + 1
     }
     println(thread_name + "completed writing, sleeping 10s")
@@ -177,7 +177,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val it_s = Source.fromFile(filePath+".read").getLines.size
     for (i <- 0 to it_s -1) {
       Importer.executeRead(id_keeper.fetch_random(), con)
-      if (i % 100 == 0) println(thread_name + " handled read: " + i)
+      //if (i % 100 == 0) println(thread_name + " handled read: " + i)
     }
 
     println(thread_name + "completed reading, sleeping 10s")
@@ -192,7 +192,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val it_s = Source.fromFile(filePath+".update").getLines.size
     for(i <- 0 to it_s -1) {
       Importer.executeUpdate(id_keeper.fetch_random(),id_keeper.fetch_prev(),con)
-      if (i % 100 == 0) println(thread_name + "handled update: " + i)
+      //if (i % 100 == 0) println(thread_name + "handled update: " + i)
     }
     println(thread_name + "completed updating, sleeping 10s")
     "shuf %s -o %s".format(filePath+".update", filePath+".del") !!;
@@ -206,7 +206,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val it_s = Source.fromFile(filePath+".del").getLines.size
     for(i <- 0 to it_s -1) {
       Importer.executeDel(id_keeper.fetch_random(),con)
-      if (i % 100 == 0) println(thread_name + "handled delete: " + i)
+      //if (i % 100 == 0) println(thread_name + "handled delete: " + i)
     }
     println(thread_name + "completed deleting, sleeping 10s")
     con.closeCon()

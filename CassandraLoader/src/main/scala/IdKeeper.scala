@@ -22,10 +22,11 @@ class IdKeeper(filePath: String) {
     }
 
     List(
-      (json \ ("id")).toString(),
-      (json \ ("started_at")).toString(),
-      (dest.toString()),
-      (json \ ("service")).toString()
+      (json \ "id").toString(),
+      (json \ "started_at").toString(),
+      dest.toString(),
+      (json \ "service").toString(),
+      (json \ "created_at").toString()
     )
   }
 
