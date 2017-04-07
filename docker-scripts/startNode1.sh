@@ -3,7 +3,7 @@ my_ip=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
 
 volume="-v /root/thesis/doc-cassandra:/var/lib/cassandra"
 
-if [ "$1" -eq "i" ]; then
+if [ "$1" = "i" ]; then
     volume=""
 fi
 
