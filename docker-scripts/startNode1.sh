@@ -1,6 +1,4 @@
 #!/bin/sh
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DIR2="$DIR/../cassandra-models"
 my_ip=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
 
 volume="-v /root/thesis/doc-cassandra:/var/lib/cassandra"
@@ -16,7 +14,7 @@ CASSANDRA_RPC_ADDRESS=$my_ip -e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileS
 -e LOCAL_JMX=no -e JVM_OPTS=-Djava.rmi.server.hostname=$my_ip $volume \
 laban/cassandra:3.9
 sleep 60
-docker exec cont1 cqlsh -e "SOURCE '../cassandra-models/edr.cql'"
+cqlsh 192.168.46.11 -e "SOURCE '../cassandra-models/edr.cql'"
 
 #docker run --name $(hostname)-docker -d --net=host -p 7000:7000 -p 9042:9042 -e CASSANDRA_BROADCAST_ADDRESS=192.168.46.11 -v $DIR2:/cassandra-models cassandra:3.9 #~/thesis/cassandra-models:/cassandra-models
 #docker run --name cont2 -d -p 53004:9042 -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' cont1)" cassandra:3
