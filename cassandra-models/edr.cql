@@ -1,4 +1,4 @@
-CREATE KEYSPACE IF NOT EXISTS cdr WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '2'}  AND durable_writes = true;
+CREATE KEYSPACE IF NOT EXISTS cdr WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'}  AND durable_writes = true;
 
 CREATE TYPE IF NOT EXISTS cdr.products(
   id  TEXT,
