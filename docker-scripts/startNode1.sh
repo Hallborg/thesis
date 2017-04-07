@@ -11,7 +11,6 @@ fi
 docker run --name $(hostname)-docker -d --net=host -p 7000:7000 -p 9042:9042 \
 -e CASSANDRA_BROADCAST_ADDRESS=$my_ip -e CASSANDRA_LISTEN_ADDRESS=$my_ip -e \
 CASSANDRA_RPC_ADDRESS=$my_ip -e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch \
--e LOCAL_JMX=no -e JVM_OPTS=-Djava.rmi.server.hostname=$my_ip $volume \
 laban/cassandra:3.9
 sleep 60
 cqlsh 192.168.46.11 -e "SOURCE '../cassandra-models/edr.cql'"

@@ -10,6 +10,5 @@ fi
 docker run --name $(hostname)-docker -d --net=host -p 7000:7000 -p 9042:9042 \
 -e CASSANDRA_BROADCAST_ADDRESS=$my_ip -e CASSANDRA_SEEDS=$first_ip \
 -e CASSANDRA_LISTEN_ADDRESS=$my_ip -e CASSANDRA_RPC_ADDRESS=$my_ip \
--e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch -e LOCAL_JMX=no \
--e JVM_OPTS=-Djava.rmi.server.hostname=$my_ip $volume \
+-e CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch\
 laban/cassandra:3.9
