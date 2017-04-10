@@ -26,28 +26,34 @@ object testObj {
 
     val loaders = create_loaders(args)
 
-
-    val f1 = Future {
-      loaders(0).run_separate()
-    }
-    val f2 = Future {
-      loaders(1).run_separate()
-    }
-
-    val f3 = Future {
-      loaders(2).run_separate()
+    if (loaders.size == 1) {
+      val f1 = Future {
+        loaders(0).run_separate()
+      }
+      println("main thread blocked")
+      Await.result(f1, 60 minute)
     }
 
-    val f4 = Future {
-      loaders(3).run_separate()
+    else {
+      val f1 = Future {
+        loaders(0).run_separate()
+      }
+      val f2 = Future {
+        loaders(1).run_separate()
+      }
+
+      val f3 = Future {
+        loaders(2).run_separate()
+      }
+
+      val f4 = Future {
+        loaders(3).run_separate()
+      }
+
+      println("main thread blocked")
+      (Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), Await.result(f4, 60 minute))
     }
 
-    println("main thread blocked")
-
-
-
-
-    (Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), Await.result(f4, 60 minute))
     println("main thread unblocked")
     /*val f11 = Future { loaders(0).run_mix() }
     val f12 = Future { loaders(1).run_mix() }
@@ -69,18 +75,30 @@ object testObj {
 
 
   def create_loaders(args: Array[String]): List[Loader] = {
-    if ( args.size == 3 ) {
+    if (args.size == 3) {
       println("python ~/thesis/dataModel/data-generator.py %s".format(args(2)) !!)
-      List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1)),
-      new Loader(args(0).toInt,"Thread-2", "~/thesis/dataModel/mockdata-1", args(1)),
-      new Loader(args(0).toInt,"Thread-3", "~/thesis/dataModel/mockdata-2", args(1)),
-      new Loader(args(0).toInt,"Thread-4", "~/thesis/dataModel/mockdata-3", args(1)))
+      if(args(0) == 0) {
+        List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1)),
+          new Loader(args(0).toInt,"Thread-2", "~/thesis/dataModel/mockdata-1", args(1)),
+          new Loader(args(0).toInt,"Thread-3", "~/thesis/dataModel/mockdata-2", args(1)),
+          new Loader(args(0).toInt,"Thread-4", "~/thesis/dataModel/mockdata-3", args(1)))
+      }
+      else {
+        List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1)))
+      }
+
     }
     else {
-      List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)),
-      new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1)),
-      new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2", args(1)),
-      new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-3", args(1)))
+      if(args(0) == 0) {
+        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)),
+          new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1)),
+          new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2", args(1)),
+          new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-3", args(1)))
+      }
+      else {
+        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)))
+      }
+
     }
   }
 }

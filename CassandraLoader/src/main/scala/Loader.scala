@@ -18,6 +18,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     else if (setting == 1) {
       step_write()
       step_read()
+      step_update()
+      step_del()
     }
   }
   def run_mix(): Unit = {
@@ -43,16 +45,6 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     else if(setting == 1) step_mix()
 
   }
-/*
-  def save_time(start_date: String, text_s : String, text_f: String): Unit = {
-    val end_date = "date +%s000000000" !!;
-    val pw =
-
-    pw.write("alert text='%s' %s".format(text_s, start_date))
-    pw.write("alert text='%s' %s".format(text_f, end_date))
-    pw.close()
-
-  }*/
 
 
 
@@ -74,49 +66,117 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         for (e <- objects) Importer.executeWrite(e, con)
 
         start = 0
-        println(thread_name + " step_wrote: " + (end + 1))
+        println(thread_name + " i:" + i + " step_wrote: " + (end + 1))
         end = end + INC_AMOUNT
 
-        Thread.sleep(10000 + i * 1000)
+        Thread.sleep(6000 + i * 1000)
 	      i = i + 1
       }
     }
     println(thread_name + " completed writing, sleeping 20s")
+    "shuf %s -o %s".format(filePath, filePath+".read") !!;
     con.closeCon()
     Thread.sleep(20000)
 
   }
   def step_read(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath)
-    val it = Source.fromFile(filePath).getLines
+    val id_keeper = new IdKeeper(filePath+".read")
+    val it = Source.fromFile(filePath+".read").getLines.size
     val INC_AMOUNT = 32
     var start = 0
     var end = 31
     var i = 0
-    val objects = new scala.collection.mutable.Queue[JsValue]
+    var nr_elem = 0
 
-    for (elem <- it) {
+    for (elem <- 0 until it) {
       if ( start <= end) {
         start = start + 1
-        objects.enqueue(Json.parse(elem))
+        nr_elem += 1
       }
       else {
-        for (i <- 0 to objects.size) Importer.executeRead(id_keeper.fetch_random(), con)
+        for (i <- 0 to nr_elem) Importer.executeRead(id_keeper.fetch_random(), con)
         start = 0
         println(thread_name + " step_read: " + (end + 1))
         end = end + INC_AMOUNT
-
-        Thread.sleep(10000 + i * 1000)
+        nr_elem = 0
+        Thread.sleep(6000 + i * 1000)
 	      i = i + 1
       }
 
     }
 
     println(thread_name + " completed reading, sleeping 20s")
+    "shuf %s -o %s".format(filePath+".read", filePath+".update") !!;
     con.closeCon()
     Thread.sleep(20000)
   }
+
+  def step_update(): Unit = {
+    val con = new CassandraClientClass(ip)
+    val id_keeper = new IdKeeper(filePath+".update")
+    val it = Source.fromFile(filePath+".update").getLines.size
+    val INC_AMOUNT = 32
+    var start = 0
+    var end = 31
+    var i = 0
+    var nr_elem = 0
+
+    for (elem <- 0 until it) {
+      if ( start <= end) {
+        start = start + 1
+        nr_elem += 1
+      }
+      else {
+        for (i <- 0 to nr_elem) Importer.executeUpdate(id_keeper.fetch_random(),id_keeper.fetch_prev(),con)
+        start = 0
+        println(thread_name + " step_update: " + (end + 1))
+        end = end + INC_AMOUNT
+        nr_elem = 0
+        Thread.sleep(6000 + i * 1000)
+        i = i + 1
+      }
+
+    }
+
+    println(thread_name + " completed updating, sleeping 20s")
+    "shuf %s -o %s".format(filePath+".update", filePath+".del") !!;
+    con.closeCon()
+    Thread.sleep(20000)
+  }
+
+  def step_del(): Unit = {
+    val con = new CassandraClientClass(ip)
+    val id_keeper = new IdKeeper(filePath+".del")
+    val it = Source.fromFile(filePath+".del").getLines.size
+    val INC_AMOUNT = 32
+    var start = 0
+    var end = 31
+    var i = 0
+    var nr_elem = 0
+
+    for (elem <- 0 until it) {
+      if ( start <= end) {
+        start = start + 1
+        nr_elem += 1
+      }
+      else {
+        for (i <- 0 to nr_elem) Importer.executeDel(id_keeper.fetch_random(),con)
+        start = 0
+        println(thread_name + " step_del: " + (end + 1))
+        end = end + INC_AMOUNT
+        nr_elem = 0
+        Thread.sleep(6000 + i * 1000)
+        i = i + 1
+      }
+
+    }
+
+    println(thread_name + " completed deleting, sleeping 20s")
+    con.closeCon()
+    Thread.sleep(20000)
+  }
+
 
   def step_mix(): Unit = {
     val con = new CassandraClientClass(ip)
