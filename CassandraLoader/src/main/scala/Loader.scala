@@ -7,6 +7,7 @@ import java.io._
   * Created by Hallborg on 2017-03-09.
   */
 class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
+  val INC_AMOUNT = 128
   def run_separate(): Unit = {
 
     if (setting == 0) {
@@ -51,9 +52,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   def step_write(): Unit = {
     val con = new CassandraClientClass(ip)
     val it = Source.fromFile(filePath).getLines
-    val INC_AMOUNT = 32
     var start = 0
-    var end = 31
+    var end = 127
     var i = 0
     val objects = new scala.collection.mutable.Queue[JsValue]
 
@@ -83,9 +83,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val con = new CassandraClientClass(ip)
     val id_keeper = new IdKeeper(filePath+".read")
     val it = Source.fromFile(filePath+".read").getLines.size
-    val INC_AMOUNT = 32
     var start = 0
-    var end = 31
+    var end = 127
     var i = 0
     var nr_elem = 0
 
@@ -116,9 +115,8 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val con = new CassandraClientClass(ip)
     val id_keeper = new IdKeeper(filePath+".update")
     val it = Source.fromFile(filePath+".update").getLines.size
-    val INC_AMOUNT = 32
     var start = 0
-    var end = 31
+    var end = 127
     var i = 0
     var nr_elem = 0
 
@@ -151,7 +149,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val it = Source.fromFile(filePath+".del").getLines.size
     val INC_AMOUNT = 32
     var start = 0
-    var end = 31
+    var end = 127
     var i = 0
     var nr_elem = 0
 
@@ -181,9 +179,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   def step_mix(): Unit = {
     val con = new CassandraClientClass(ip)
     val it = Source.fromFile(filePath).getLines
-    val INC_AMOUNT = 32
+
     var start = 0
-    var end = 31
+    var end = 127
     var i = 0
     val objects = new scala.collection.mutable.Queue[JsValue]
 

@@ -77,7 +77,7 @@ object testObj {
   def create_loaders(args: Array[String]): List[Loader] = {
     if (args.size == 3) {
       println("python ~/thesis/dataModel/data-generator.py %s".format(args(2)) !!)
-      if(args(0) == 0) {
+      if(args(0).toInt == 0) {
         List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1)),
           new Loader(args(0).toInt,"Thread-2", "~/thesis/dataModel/mockdata-1", args(1)),
           new Loader(args(0).toInt,"Thread-3", "~/thesis/dataModel/mockdata-2", args(1)),
@@ -89,7 +89,7 @@ object testObj {
 
     }
     else {
-      if(args(0) == 0) {
+      if(args(0).toInt == 0) {
         List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)),
           new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1)),
           new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2", args(1)),
