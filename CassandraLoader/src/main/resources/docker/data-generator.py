@@ -17,9 +17,9 @@ traffic_case_enum=["originating", "terminating", "forwarding"]
 event_type_enum=["Voice", "sms", "mms", "video"]
 edr_service_enum=["1", "2"]
 products_enum=["Call Plan Normal", "Call Plan Low", "Call Plan High", "Call Plan Allin", \
-"Data Plan Normal", "Data Plan Low", "Data Plan High"]
+			   "Data Plan Normal", "Data Plan Low", "Data Plan High"]
 access_point_name_enum=["example.com", "hallborg.se", "patryk.se", "wikipedia.org", \
-"amazon.com", "instagram.com", "twitter.com", "github.com", "reddit.com"]
+						"amazon.com", "instagram.com", "twitter.com", "github.com", "reddit.com"]
 roming_enum=["false", "true"]
 
 """ Make sure that passed argument is an integer """
@@ -95,9 +95,9 @@ def create_charged_amounts():
 "expiry_date": %s, \
 "charged_type": "%s", \
 "event_type": "%s" }\
-""" % (charged_amounts_amount, charged_amounts_id, charged_amounts_endbalance,\
-			charged_amounts_res_type, charged_amounts_name, charged_amounts_exp_date, \
-			charged_amounts_charg_type, charged_amounts_event_type)
+""" % (charged_amounts_amount, charged_amounts_id, charged_amounts_endbalance, \
+	   charged_amounts_res_type, charged_amounts_name, charged_amounts_exp_date, \
+	   charged_amounts_charg_type, charged_amounts_event_type)
 		charged_amounts_list.append(charged_amounts_i)
 	charged_amounts = """\
 "charged_amounts": %s\
@@ -148,7 +148,7 @@ def create_event_details():
 "call_event": {"traffic_case": "%s", %s, "b_party_number": "%s", \
 "event_type": "%s", "is_roaming": %s, %s, "a_party_number": "%s" }\
 """ % (event_d_traffic_case, alocation, event_d_b_number, event_d_event_type, \
-		event_d_roaming, blocation, event_d_a_number)
+	   event_d_roaming, blocation, event_d_a_number)
 
 	return event_details
 
@@ -171,8 +171,8 @@ def started_at_time():
 	hour=random.randint(0, 23)
 	hour_str = str(hour)
 	if hour < 10: hour_str = "0"+str(hour)
-	timestamp = "%s-%s-%sT%s:%s:%s" % (str(random.randint(2015, 2017)), mounth_str,\
-	day_str, hour_str, str(random.randint(10,59)), str(random.randint(10,59)))
+	timestamp = "%s-%s-%sT%s:%s:%s" % (str(random.randint(2015, 2017)), mounth_str, \
+									   day_str, hour_str, str(random.randint(10,59)), str(random.randint(10,59)))
 	return timestamp
 
 """ EDR table """
@@ -202,9 +202,9 @@ def write_mocdata_to_a_file(edr_list_json, i):
 	for item in edr_list_json:
 		file.write(item + "\n")
 	file.close()
-	#bashCommand = "uname -n"
-	#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-	#output, error = process.communicate()
+#bashCommand = "uname -n"
+#process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+#output, error = process.communicate()
 
 """ Create database entries for testing, and handling the EDR list """
 def create_database_entries(argument):
@@ -217,7 +217,7 @@ def create_database_entries(argument):
 		set_global_var(edr_service)
 		service_unit_t = create_service_unit()
 		edr_table = create_edr_table(create_event_details(), \
-			create_event_charges(service_unit_t), service_unit_t, edr_service)
+									 create_event_charges(service_unit_t), service_unit_t, edr_service)
 
 
 		edr_list.append(edr_table)
@@ -226,7 +226,7 @@ def create_database_entries(argument):
 			edr_list = []
 
 
-	#for mocdata_list in edr_arr:
+		#for mocdata_list in edr_arr:
 		#edr_list_json.append((""" %s """ % (mocdata_list)).replace("\'", ""))
 
 	return edr_arr

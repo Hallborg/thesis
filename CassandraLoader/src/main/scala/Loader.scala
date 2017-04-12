@@ -147,7 +147,6 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     val con = new CassandraClientClass(ip)
     val id_keeper = new IdKeeper(filePath+".del")
     val it = Source.fromFile(filePath+".del").getLines.size
-    val INC_AMOUNT = 32
     var start = 0
     var end = 127
     var i = 0
