@@ -31,7 +31,8 @@ dockerfile in docker := {
     from("java")
     // Add all files on the classpath
     add(classpath.files, "/app/")
-    add(dockerFiles("data-generator.py"), "~/thesis/dataModel/data-generator.py")
+    add(dockerFiles("data-generator.py"), "/root/thesis/thesis-scripts/data-generator.py")
+    runRaw("mkdir /root/thesis/dataModel")
     // Add the JAR file
     add(jarFile, jarTarget)
     // On launch run Java with the classpath and the main class
