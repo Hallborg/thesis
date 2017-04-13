@@ -74,9 +74,6 @@ object testObj {
   def create_loaders(args: Array[String]): List[Loader] = {
     val scan = new Scanner(System.in);
     if (args.size == 3) {
-      println("python /root/thesis/thesis-scripts/data-generator.py %s".format(args(2)) !!)
-
-
       println("start by typing something")
       scan.nextLine()
       if(args(0).toInt == 0) {
