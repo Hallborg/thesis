@@ -33,7 +33,7 @@ def arg_t(argv):
 		if argv[0] < 0:
 			print "Usage ./data-generator.py <Integer>\nNo negatives!"
 			exit()
-		elif argv[0] > 5100000:
+		elif argv[0] > 6100000:
 			print "Usage ./data-generator.py <Integer>\nNumber is too big! \
 			5.000.000 is enough."
 			exit()

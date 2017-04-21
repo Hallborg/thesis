@@ -8,5 +8,5 @@ volume="-v /home/node5/thesis/dataModel:/root/thesis/dataModel"
 if [ "$4" = "i" ]; then
 volume=""
 fi
-docker run --rm -it -p 7199:7199 -p 5998:5998 $volume laban/cassandraloader $1 $2 $3
+docker run -it -p 7199:7199 -p 5998:5998 $volume laban/cassandraloader $1 $2 $3
 
