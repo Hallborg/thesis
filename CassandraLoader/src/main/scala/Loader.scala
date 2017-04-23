@@ -9,7 +9,7 @@ import java.util.Calendar
   */
 class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
   val INC_AMOUNT = 128
-  val EXEC_TIME = 10000
+  val EXEC_TIME = 300000
   def run_separate(): Unit = {
 
     if (setting == 0) {
@@ -227,7 +227,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
         println(thread_name + " completed writing, sleeping 20s")
         Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
         write_rest = true
-        Thread.sleep(20000)
+        Thread.sleep(40000)
       }
         //Seq("bash", "-c", "echo '%s' >> %s".format(Json.parse(elem),filePath+".wrote"))!!;
         Importer.executeWrite(Json.parse(elem), con)
@@ -238,10 +238,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
 
 
     println(thread_name + " completed writing rest, sleeping 20s")
-
+    //Seq("bash","-c","head -n %s %s > %s".format(nr_of_runs,filePath, filePath+".wrote"))!!;
     "shuf %s -o %s".format(filePath, filePath+".read") !!;
     con.closeCon()
-    Thread.sleep(20000)
+    Thread.sleep(40000)
 
   }
 
@@ -265,7 +265,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
     "shuf %s -o %s".format(filePath+".read", filePath+".update") !!;
     con.closeCon()
-    Thread.sleep(20000)
+    Thread.sleep(40000)
   }
 
   def update() : Unit = {
@@ -287,7 +287,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
     "shuf %s -o %s".format(filePath+".update", filePath+".del") !!;
     con.closeCon()
-    Thread.sleep(20000)
+    Thread.sleep(40000)
   }
 
   def delete(): Unit = {
@@ -307,8 +307,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
     }}
     println(thread_name + " completed deleting, sleeping 10s")
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
+    println(thread_name + " completed deleting, sleeping 20s")
     con.closeCon()
-    Thread.sleep(10000)
+    Thread.sleep(20000)
   }
 
 }
