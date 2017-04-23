@@ -55,6 +55,14 @@ def set_global_var3(value):
 	global DEVICE_INDEX
 	DEVICE_INDEX = value
 
+
+def read_am(reader, name):
+	reader = list(reader)
+	reader = reader[0]
+	for i in range(0, len(reader)):
+		reader[i] = float(reader[i])
+	return reader, [1, 1, 1, 1]
+
 """ Reads all files and appends the content to a list. """
 def csv_to_bar_list(path_n_min_list):
 	mean_for_bar_graph = []
@@ -65,14 +73,17 @@ def csv_to_bar_list(path_n_min_list):
 	for i in range(1,CSV_AMOUNT):
 		with open(str(path[0])+str(path[i]), 'r') as f:
 			print str(path[i])
-			means, row_am = bar_graph_calc(csv.reader(f), str(path[i]), i-1)
+			if 'cass-am' in path_n_min_list[0] or 'comp-am' in path_n_min_list[0]:
+				means, row_am = read_am(csv.reader(f), str(path[i]))
+			else:
+				means, row_am = bar_graph_calc(csv.reader(f), str(path[i]), i-1)
 			mean_for_bar_graph.append(means)
 			row_amounts.append(row_am)
-			if 'bm-dockeriso' in path[i]:
+			if '-dockeriso' in path[i]:
 				labelSt.append(3)
-			elif 'bm-docker' in path[i]:
+			elif '-docker' in path[i]:
 				labelSt.append(1)
-			elif 'bm-lxc' in path[i]:
+			elif '-lxc' in path[i]:
 				labelSt.append(2)
 			else:
 				labelSt.append(0)
@@ -81,12 +92,12 @@ def csv_to_bar_list(path_n_min_list):
 """ Filter a list of entries to where cluster starts to 
 	recive data, and creates a list of mean values for those. """
 def bar_graph_calc(reader, name, k):
-	max_time = 45
+	max_time = 300
 	mean_of_nodes = []
 	mean_over_time = []
 	reader = list(reader)
 	reader = reader[3:]
-	row_amount = [0]*5
+	row_amount = [0]*10
 	i = 0
 	j = 0
 	time_count = 0
@@ -107,6 +118,8 @@ def bar_graph_calc(reader, name, k):
 				mean_over_time.append(mean_calc(mean_of_nodes))
 				data_to_anova.append(mean_of_nodes)
 				print "Time on graph: %d 		: 		Time it actually took: %d" % (time_count, real_time)
+				#for s in data_to_anova:
+				#	print len(s)
 				#print mean_of_nodes
 				time_count = 0
 				real_time = 0
@@ -117,17 +130,45 @@ def bar_graph_calc(reader, name, k):
 	mean_over_time.pop(1)
 	row_amount.pop(1)
 	data_to_anova.pop(1)
+	while len(mean_over_time) > 4:
+		ret = smallest(mean_over_time)
+		print "means: %d" % (ret)
+		mean_over_time.pop(ret)
+	while len(row_amount) > 4:
+		ret = smallest(row_amount)
+		print "rows: %d" % (ret)
+		row_amount.pop(ret)
+	while len(data_to_anova) > 4:
+		ret = smallest(data_to_anova)
+		print "anova: %d" % (ret)
+		data_to_anova.pop(ret)
 	j = 0
+	ind = 0
+	for ms in mean_over_time:
+		print "[%s] peaked to: %f" % (lb_operation[ind], ms)
+		ind = ind + 1
 	for a_list in data_to_anova:
-		print len(a_list)
+		#print len(a_list)
 		write_csv_to_a_file(a_list, j, lb1[k], device[DEVICE_INDEX])
 		j = j + 1
 	return mean_over_time, row_amount
+
+def smallest(a_list):
+	ret = 0
+	temp = a_list[0]
+	for i in range(1, len(a_list)):
+		if a_list[i] < temp:
+			temp = a_list[i]
+			ret = i
+	return ret
 
 """ Calculates mean value of a list. """
 def mean_calc(a_list):
 	a_sum = 0.0
 	for entry in a_list:
+		#print entry
+		if entry is '':
+			entry = 0.0
 		a_sum = a_sum+float(entry)
 	a_sum = a_sum/len(a_list)
 	return a_sum
@@ -403,14 +444,15 @@ def save_plot(path_n_file):
 """ Handle and Create the bar graphs. """
 def handle_n_create_bars(path_n_min):
 	m, rows, labelIndex = csv_to_bar_list(path_n_min)
-	print rows
-	print m
+	#print rows
+	#print m
 	#m = del_one(m)
 	#rows = del_one(rows)
 	m_std = calc_mean_std(m)
 	rows_std = calc_mean_std(rows)
-	print rows
-	print m
+	#print rows
+	#print m
+	print path_n_min[0]
 	if 'recive' in path_n_min[0] or 'sent' in path_n_min[0]:
 		create_bar_graph(m, path_n_min[0], m_std, lb1, 'I/O operation', 'kb/s', 
 			'I/O intensive write/read/update/delete load in kb/s', ('Write', 'Read', 'Update', 'Delete'), labelIndex)
@@ -419,7 +461,13 @@ def handle_n_create_bars(path_n_min):
 			'CPU intensive write/read/update/delete load in percent', ('Write', 'Read', 'Update', 'Delete'), labelIndex)
 		create_bar_graph(rows, path_n_min[0]+'-bar-time-it-took', rows_std, lb1, 'Operation', 'Time in sec', 
 			'CPU intensive write/read/update/delete load in sec', ('Write', 'Read', 'Update', 'Delete'), labelIndex)
-	operands = '-'+device[0]+'-'+lb_operation[0]+'.csv'
+	elif 'cass-am' in path_n_min[0]:
+		create_bar_graph(m, path_n_min[0]+"-cass-am", m_std, lb1, 'Operation', '#edrs', 
+			'Amount of edrs handled in every operation', ('Write', 'Read', 'Update', 'Delete'), labelIndex)
+	elif 'comp-am' in path_n_min[0]:
+		create_bar_graph(m, path_n_min[0]+"-comp-am", m_std, lb1, 'Operation', '#edrs', 
+			'Amount of edrs handled in every operation', ('Write', 'Read', 'Update', 'Delete'), labelIndex)
+	#operands = '-'+device[0]+'-'+lb_operation[0]+'.csv'
 	#fix_files(operands)
 	#elif 'memory' in path_n_min[0]:
 	#	create_bar_graph(m, path_n_min[0], m_std, lb1, 'Operation', 'usage in kb', 

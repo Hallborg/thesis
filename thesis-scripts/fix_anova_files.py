@@ -4,7 +4,7 @@ import sys
 import os
 from os import listdir
 
-architecture = ['BM', 'Docker', 'DockerIso', 'LXC']
+architecture = ['BM', 'Docker', 'LXC', 'DockerIso']
 device=['cpu', 'sent', 'recive']
 lb_operation=['write', 'read', 'update', 'delete']
 dir_path ="%s/../csv-and-graphs/anova/csv/" % (str(os.path.dirname(os.path.realpath(__file__))))
@@ -34,11 +34,17 @@ def make_one_file(a_list, dev, operand):
 	bm = a_list[0]
 	strl = len(bm)
 	docker = a_list[1]
-	if len(docker) is not strl: print "NOO"
+	if int(len(docker)) < int(strl): print "Docker: %d smaller then bm: %d" % (int(len(docker)), int(strl))
+	if int(len(docker)) > int(strl): print "Docker: %d bigger then bm: %d" % (int(len(docker)), int(strl))
+	if int(len(docker)) == int(strl): print "Docker: %d same as bm: %d" % (int(len(docker)), int(strl))
 	docker_iso = a_list[2]
-	if len(docker_iso) is not strl: print "NOO"
+	if int(len(docker_iso)) < int(strl): print "ISO docker: %d smaller then bm: %d" % (int(len(docker_iso)), int(strl))
+	if int(len(docker_iso)) > int(strl): print "ISO docker: %d bigger then bm: %d" % (int(len(docker_iso)), int(strl))
+	if int(len(docker_iso)) == int(strl): print "ISO docker: %d same as bm: %d" % (int(len(docker_iso)), int(strl))
 	lxc = a_list[3]
-	if len(lxc) is not strl: print "NOO"
+	if int(len(lxc)) < int(strl): print "LXC: %d smaller then bm: %d" % (int(len(lxc)), int(strl))
+	if int(len(lxc)) > int(strl): print "LXC: %d bigger then bm: %d" % (int(len(lxc)), int(strl))
+	if int(len(lxc)) == int(strl): print "LXC: %d same as bm: %d" % (int(len(lxc)), int(strl))
 	with open(str(dir_path)+'done/'+dev+'-'+operand+'.csv', 'wb') as f:
 		writer=csv.writer(f)
 		for i in range(0, strl-1):
@@ -47,13 +53,14 @@ def make_one_file(a_list, dev, operand):
 def handle_data(a_list):
 	i = 0; j = 0
 	for dev_oper in a_list:
-		#print dev_oper
+		print "[%s] operation for [%s] takes place!" % (lb_operation[j], device[i])
 		make_one_file(dev_oper, device[i], lb_operation[j])
 		if j < 3:
 			j = j + 1
 		else:
 			j = 0
 			i = i + 1
+		print '\n'
 
 def read_directory():
 	files_data = []
