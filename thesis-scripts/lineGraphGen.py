@@ -14,7 +14,7 @@ global DEVICE_INDEX
 """ Global variables """
 MIN_SIZE_AT_RECIVE = 100 # 100 och 5
 CSV_AMOUNT=0
-PEAK_SIZE = 15
+PEAK_SIZE = 19
 DEVICE_INDEX = 0
 
 lb1 = ['BM', 'Docker', 'LXC', 'DockerIso']
@@ -97,7 +97,7 @@ def bar_graph_calc(reader, name, k):
 	mean_over_time = []
 	reader = list(reader)
 	reader = reader[3:]
-	row_amount = [0]*10
+	row_amount = [0]*20
 	i = 0
 	j = 0
 	time_count = 0
@@ -112,7 +112,8 @@ def bar_graph_calc(reader, name, k):
 			real_time = real_time + 1
 			if int(time_count) < int(max_time):
 				mean_of_nodes.append(mean_calc(row[1:]))
-				row_amount[j] = row_amount[j] + 1
+				if j < 20:
+					row_amount[j] = row_amount[j] + 1
 				time_count = time_count + 1
 			if float(s2) < float(MIN_SIZE_AT_RECIVE):
 				mean_over_time.append(mean_calc(mean_of_nodes))
@@ -139,7 +140,7 @@ def bar_graph_calc(reader, name, k):
 		print "rows: %d" % (ret)
 		row_amount.pop(ret)
 	while len(data_to_anova) > 4:
-		ret = smallest(data_to_anova)
+		ret = smallest2(data_to_anova)
 		print "anova: %d" % (ret)
 		data_to_anova.pop(ret)
 	j = 0
@@ -149,7 +150,8 @@ def bar_graph_calc(reader, name, k):
 		ind = ind + 1
 	for a_list in data_to_anova:
 		#print len(a_list)
-		write_csv_to_a_file(a_list, j, lb1[k], device[DEVICE_INDEX])
+		print len(a_list)
+		write_csv_to_a_file(a_list, j, lb1[k], device[DEVICE_INDEX], name)
 		j = j + 1
 	return mean_over_time, row_amount
 
@@ -157,7 +159,18 @@ def smallest(a_list):
 	ret = 0
 	temp = a_list[0]
 	for i in range(1, len(a_list)):
-		if a_list[i] < temp:
+		s = a_list[i]
+		if float(s) < float(temp):
+			temp = a_list[i]
+			ret = i
+	return ret
+
+def smallest2(a_list):
+	ret = 0
+	temp = a_list[0]
+	for i in range(1, len(a_list)):
+		s = a_list[i]
+		if len(s) < len(temp):
 			temp = a_list[i]
 			ret = i
 	return ret
@@ -280,11 +293,11 @@ def csv_to_line_list(path_n_min):
 			temp1, temp2 = filter_the_file(csv.reader(f), path[i])
 			means_for_line_graph.append(temp1)
 			time_stamps.append(temp2)
-			if 'bm_dockeriso' in path[i]:
+			if '_dockeriso' in path[i]:
 				labelSt.append(3)
-			elif 'bm_docker' in path[i]:
+			elif '_docker' in path[i]:
 				labelSt.append(1)
-			elif 'bm_lxc' in path[i]:
+			elif '_lxc' in path[i]:
 				labelSt.append(2)
 			else:
 				labelSt.append(0)
@@ -294,8 +307,8 @@ def csv_to_line_list(path_n_min):
 def filter_the_file(reader, name):
 	i = 0
 	loop = True
-	if '_bm_bm' in name:
-		limit = MIN_SIZE_AT_RECIVE-1.0
+	if '_lxc' in name:
+		limit = 1.8
 	else:
 		limit = MIN_SIZE_AT_RECIVE
 	zeros = 0
@@ -325,8 +338,8 @@ def filter_the_file(reader, name):
 			#graphs = 0
 		if count >= 20:
 			list_to_ret.append('Walla')
-			if '_bm_bm' in name:
-				limit = MIN_SIZE_AT_RECIVE-1.0
+			if '_lxc' in name:
+				limit = 1.8
 			else:
 				limit = MIN_SIZE_AT_RECIVE
 		if (sk >= 1) & (zeros >= 4) & (count < 20):
@@ -349,6 +362,10 @@ def filter_the_file(reader, name):
 	peak_timestamps = filter_on_amount(peak_timestamps)
 	i = 0
 	print spl
+	for j in range(0, len(spl)):
+		while len(spl[j]) < PEAK_SIZE:
+			temp = spl[j]
+			spl[j].append(temp[len(temp)-1]+1)
 	for ins in spl:
 	 	print 'Graph %d had: %d peaks.' % (i+1, len(ins))
 	 	i = i + 1
@@ -405,6 +422,7 @@ def filter_on_amount(spl):
 def calc_x_axis(ls):
 	amount = 128
 	x = []
+	c = 1
 	for s in ls:
 		temp = []
 		for i in range(0, len(s)):
@@ -444,10 +462,6 @@ def save_plot(path_n_file):
 """ Handle and Create the bar graphs. """
 def handle_n_create_bars(path_n_min):
 	m, rows, labelIndex = csv_to_bar_list(path_n_min)
-	#print rows
-	#print m
-	#m = del_one(m)
-	#rows = del_one(rows)
 	m_std = calc_mean_std(m)
 	rows_std = calc_mean_std(rows)
 	#print rows
@@ -500,9 +514,12 @@ def handle_n_create_lines(path_n_min):
 	create_time_lines(means, path_n_min[0], "CPU ussage in %", title, lblIndex, 1)
 	create_time_lines(time_stamps, path_n_min[0]+"-time", "Time in sec", title, lblIndex, 2)
 	
-def write_csv_to_a_file(a_list, i, name, device_name):
+def write_csv_to_a_file(a_list, i, name, device_name, st):
 	dir_path = os.path.dirname(os.path.realpath(__file__))
-	file = open("%s/../csv-and-graphs/anova/csv/%s-%s-%s.csv" % (str(dir_path), name, device_name, lb_operation[i]), "w")
+	if "_comp" in st:
+		file = open("%s/../csv-and-graphs/anova/comp-csv/%s-%s-%s.csv" % (str(dir_path), name, device_name, lb_operation[i]), "w")
+	else:
+		file = open("%s/../csv-and-graphs/anova/csv/%s-%s-%s.csv" % (str(dir_path), name, device_name, lb_operation[i]), "w")
 	#file.write(a_list)
 	for item in a_list:
 		file.write(str(item)+', ')
