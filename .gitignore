@@ -1,7 +1,6 @@
 *.class
 *.log
 *.json
-*.csv
 
 # sbt specific
 .cache

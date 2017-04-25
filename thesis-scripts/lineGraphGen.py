@@ -450,7 +450,7 @@ def plot_line_graph(m_y, m_x, subplot, ylabel, xlabel, leg, i, titl, colr):
 	#for i in range(0, len(m_y)):
 	#	plt.text(m_x[i], m_y[i], round(m_y[i], 2), fontsize=10)
 	plt.title(titl)
-	plt.legend(loc=1, bbox_to_anchor=(1.28, 1.0))
+	plt.legend(loc=1, bbox_to_anchor=(1.17, 1.0)) #1.28, 1.0
 
 def save_plot(path_n_file):
 	path = get_path("graphs/")
@@ -491,7 +491,7 @@ def handle_n_create_bars(path_n_min):
 
 def create_time_lines(time_stamps, path, ylabl, title, lblIndex, fig_nr):
 	plt.figure(fig_nr)
-	plt.subplots(1,1, figsize=(18, 11), facecolor='w', edgecolor='k')
+	plt.subplots(1,1, figsize=(30, 14), facecolor='w', edgecolor='k')
 	j = 0
 	for ls_y in time_stamps:
 		ls_x = calc_x_axis(ls_y)
