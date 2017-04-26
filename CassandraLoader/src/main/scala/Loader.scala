@@ -7,23 +7,28 @@ import java.util.Calendar
 /**
   * Created by Hallborg on 2017-03-09.
   */
-class Loader(setting: Int,thread_name: String, filePath: String, ip: String) {
+class Loader(setting: Int,thread_name: String, filePath: String, ip: String, crudOp: String) {
   val INC_AMOUNT = 128
   val EXEC_TIME = 300000
   def run_separate(): Unit = {
 
     if (setting == 0) {
       //"truncate -s 0 %s".format(filePath+".wrote") !!;
-      write()
-      read()
-      update()
-      delete()
+      crudOp match {
+        case "c" => write()
+        case "r" => read()
+        case "u" => update()
+        case "d" => delete()
+      }
+
     }
     else if (setting == 1) {
-      step_write()
-      step_read()
-      step_update()
-      step_del()
+      crudOp match {
+        case "c" => step_write()
+        case "r" => step_read()
+        case "u" => step_update()
+        case "d" => step_del()
+      }
     }
   }
   def run_mix(): Unit = {
