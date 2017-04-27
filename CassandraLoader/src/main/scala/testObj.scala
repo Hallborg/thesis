@@ -48,7 +48,7 @@ object testObj {
       }
 
       println("main thread blocked")
-      (Await.result(f1, 720 minute), Await.result(f2, 720 minute), Await.result(f3, 720 minute), Await.result(f4, 720 minute))
+      calc_sum(args(2), Await.result(f1, 720 minute), Await.result(f2, 720 minute), Await.result(f3, 720 minute), Await.result(f4, 720 minute))
     }
 
     println("main thread unblocked")
@@ -69,7 +69,9 @@ object testObj {
 
 
   }
-
+  def calc_sum(ops: String, a: Int, b: Int , c: Int, d: Int) = {
+    Seq("bash","-c","echo %s >> %s".format((a+b+c+d),ops))!!
+  }
 
   def create_loaders(args: Array[String]): List[Loader] = {
     val scan = new Scanner(System.in);
