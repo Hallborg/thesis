@@ -14,7 +14,7 @@ class CassandraClientClass(var ip: String) {
   val session = cluster.connect()
 
   def execSession(theStr: String) = {
-    (session.executeAsync(theStr))
+    println(session.execute(theStr).one())
   }
   def closeCon(): Unit = {
     session.close()

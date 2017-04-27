@@ -82,15 +82,15 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       }
     }
     println(thread_name + " completed writing, sleeping 20s")
-    "shuf %s -o %s".format(filePath, filePath+".read") !!;
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
     Thread.sleep(20000)
 
   }
   def step_read(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".read")
-    val it = Source.fromFile(filePath+".read").getLines.size
+    val id_keeper = new IdKeeper(filePath)
+    val it = Source.fromFile(filePath).getLines.size
     var start = 0
     var end = 127
     var i = 0
@@ -114,15 +114,15 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     }
 
     println(thread_name + " completed reading, sleeping 20s")
-    "shuf %s -o %s".format(filePath+".read", filePath+".update") !!;
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
     Thread.sleep(20000)
   }
 
   def step_update(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".update")
-    val it = Source.fromFile(filePath+".update").getLines.size
+    val id_keeper = new IdKeeper(filePath)
+    val it = Source.fromFile(filePath).getLines.size
     var start = 0
     var end = 127
     var i = 0
@@ -145,16 +145,16 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     }
 
-    println(thread_name + " completed updating, sleeping 20s")
-    "shuf %s -o %s".format(filePath+".update", filePath+".del") !!;
+    //println(thread_name + " completed updating, sleeping 20s")
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
-    Thread.sleep(20000)
+    //Thread.sleep(20000)
   }
 
   def step_del(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".del")
-    val it = Source.fromFile(filePath+".del").getLines.size
+    val id_keeper = new IdKeeper(filePath)
+    val it = Source.fromFile(filePath).getLines.size
     var start = 0
     var end = 127
     var i = 0
@@ -177,9 +177,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     }
 
-    println(thread_name + " completed deleting, sleeping 20s")
+    //println(thread_name + " completed deleting, sleeping 20s")
     con.closeCon()
-    Thread.sleep(20000)
+    //Thread.sleep(20000)
   }
 
 
@@ -214,9 +214,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     }
 
-    println(thread_name + " completed step_reading, sleeping 20s")
+    //println(thread_name + " completed step_reading, sleeping 20s")
     con.closeCon()
-    Thread.sleep(20000)
+    //Thread.sleep(20000)
   }
 
   def write(): Unit = {
@@ -227,36 +227,33 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     var nr_of_runs = 0
     var write_rest = false
 
-    for (elem <- source) {
-      if (date_stop >= date_start + EXEC_TIME && write_rest == false) {
-        println(thread_name + " completed writing, sleeping 20s")
-        Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
-        write_rest = true
-        Thread.sleep(40000)
-      }
+    breakable {for (elem <- source) {
+      if (date_stop >= date_start + EXEC_TIME) break
+      Importer.executeWrite(Json.parse(elem), con)
+      //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
+      nr_of_runs = nr_of_runs + 1
+      date_stop = Calendar.getInstance.getTimeInMillis
+    }}
         //Seq("bash", "-c", "echo '%s' >> %s".format(Json.parse(elem),filePath+".wrote"))!!;
-        Importer.executeWrite(Json.parse(elem), con)
-        //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
-        nr_of_runs = nr_of_runs + 1
-        date_stop = Calendar.getInstance.getTimeInMillis
-      }
 
 
-    println(thread_name + " completed writing rest, sleeping 20s")
+
+    //println(thread_name + " completed writing rest, sleeping 20s")
+    Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
     //Seq("bash","-c","head -n %s %s > %s".format(nr_of_runs,filePath, filePath+".wrote"))!!;
-    "shuf %s -o %s".format(filePath, filePath+".read") !!;
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
-    Thread.sleep(40000)
+    //Thread.sleep(40000)
 
   }
 
   def read(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".read")
+    val id_keeper = new IdKeeper(filePath)
     val date_start = Calendar.getInstance.getTimeInMillis
     var date_stop = Calendar.getInstance.getTimeInMillis
     var nr_of_runs = 0
-    val it_s = Source.fromFile(filePath+".read").getLines.size
+    val it_s = Source.fromFile(filePath).getLines.size
 
     breakable {for (i <- 0 to it_s -1) {
       if (date_stop >= date_start + EXEC_TIME) break
@@ -266,20 +263,20 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       date_stop = Calendar.getInstance.getTimeInMillis
     }}
 
-    println(thread_name + " completed reading, sleeping 20s")
+    //println(thread_name + " completed reading, sleeping 20s")
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    "shuf %s -o %s".format(filePath+".read", filePath+".update") !!;
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
-    Thread.sleep(40000)
+    //Thread.sleep(40000)
   }
 
   def update() : Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".update")
+    val id_keeper = new IdKeeper(filePath)
     val date_start = Calendar.getInstance.getTimeInMillis
     var date_stop = Calendar.getInstance.getTimeInMillis
     var nr_of_runs = 0
-    val it_s = Source.fromFile(filePath+".update").getLines.size
+    val it_s = Source.fromFile(filePath).getLines.size
 
     breakable {for(i <- 0 to it_s -1) {
       if (date_stop >= date_start + EXEC_TIME) break
@@ -288,20 +285,20 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
     }}
-    println(thread_name + " completed updating, sleeping 20s")
+    //println(thread_name + " completed updating, sleeping 20s")
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    "shuf %s -o %s".format(filePath+".update", filePath+".del") !!;
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
-    Thread.sleep(40000)
+    //Thread.sleep(40000)
   }
 
   def delete(): Unit = {
     val con = new CassandraClientClass(ip)
-    val id_keeper = new IdKeeper(filePath+".del")
+    val id_keeper = new IdKeeper(filePath)
     val date_start = Calendar.getInstance.getTimeInMillis
     var date_stop = Calendar.getInstance.getTimeInMillis
     var nr_of_runs = 0
-    val it_s = Source.fromFile(filePath+".del").getLines.size
+    val it_s = Source.fromFile(filePath).getLines.size
 
     breakable{for(i <- 0 to it_s -1) {
       if (date_stop >= date_start + EXEC_TIME) break
@@ -310,11 +307,11 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
     }}
-    println(thread_name + " completed deleting, sleeping 10s")
+    //println(thread_name + " completed deleting, sleeping 10s")
     Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
     println(thread_name + " completed deleting, sleeping 20s")
     con.closeCon()
-    Thread.sleep(20000)
+    //Thread.sleep(20000)
   }
 
 }
