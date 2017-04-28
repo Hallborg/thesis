@@ -245,9 +245,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     //Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
     //Seq("bash","-c","head -n %s %s > %s".format(nr_of_runs,filePath, filePath+".wrote"))!!;
     "shuf %s -o %s".format(filePath, filePath) !!;
+    //println(con.nr_of_successful.toDouble / (nr_of_runs*6).toDouble)
     con.closeCon()
     //Thread.sleep(40000)
-    nr_of_runs
+    con.nr_of_successful
   }
 
   def read(): Int = {
@@ -269,9 +270,11 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     //println(thread_name + " completed reading, sleeping 20s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
     "shuf %s -o %s".format(filePath, filePath) !!;
+
+    //Thread.sleep(10000)
     con.closeCon()
-    //Thread.sleep(40000)
-    nr_of_runs
+
+    con.nr_of_successful
   }
 
   def update() : Int = {
@@ -294,7 +297,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     "shuf %s -o %s".format(filePath, filePath) !!;
     con.closeCon()
     //Thread.sleep(40000)
-    nr_of_runs
+    con.nr_of_successful
   }
 
   def delete(): Int = {
@@ -314,10 +317,10 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
     }}
     //println(thread_name + " completed deleting, sleeping 10s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    println(thread_name + " completed deleting, sleeping 20s")
+    //println(thread_name + " completed deleting, sleeping 20s")
     con.closeCon()
     //Thread.sleep(20000)
-    nr_of_runs
+    con.nr_of_successful
   }
 
 }

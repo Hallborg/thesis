@@ -30,7 +30,7 @@ object Importer {
   def executeRead(keys: List[String], con: CassandraClientClass): Unit = {
     Seq(
       "SELECT * FROM cdr.edr_by_id WHERE id = %s".format(keys.head),
-      "SELECT * FROM cdr.edr_by_destination WHERE destination = %s and id < %s".format(keys(2),keys.head),
+      "SELECT * FROM cdr.edr_by_destination WHERE destination = %s and id = %s".format(keys(2),keys.head),
       "SELECT * FROM cdr.edr_by_service WHERE service = %s and started_at = %s".format(keys(3), keys(1)),
       "SELECT * FROM cdr.edr_by_date WHERE started_at = %s".format(keys(1)),
       "SELECT * FROM cdr.edr_by_date2 WHERE created_at = %s".format(keys(4)),
@@ -44,7 +44,7 @@ object Importer {
       "UPDATE cdr.edr_by_service SET created_at = %s WHERE service = %s and started_at = %s".format(new_vals(1), keys(3), keys(1)),
       "UPDATE cdr.edr_by_date SET created_at = %s WHERE started_at = %s and id = %s".format(new_vals(1), keys(3), keys.head),
       "UPDATE cdr.edr_by_date2 SET started_at = %s WHERE created_at = %s and id = %s".format(new_vals(1), keys(4), keys.head),
-      "UPDATE cdr.edr_by_id SET started_at = %s WHERE id = %s and created_at = %s".format(new_vals.head, keys.head, keys(4))
+      "UPDATE cdr.edr_by_id2 SET started_at = %s WHERE id = %s and created_at = %s".format(new_vals.head, keys.head, keys(4))
     ) map {s => s.replaceAll("\"", "\'")} foreach (con.execSession(_))
   }
   def executeDel(keys: List[String], con: CassandraClientClass): Unit = {
@@ -54,7 +54,7 @@ object Importer {
       "DELETE FROM cdr.edr_by_service WHERE service = %s AND started_at = %s".format(keys(3), keys(1)),
       "DELETE FROM cdr.edr_by_date WHERE started_at = %s AND id = %s".format(keys(1), keys.head),
       "DELETE FROM cdr.edr_by_date2 WHERE created_at = %s AND id = %s".format(keys(4), keys.head),
-      "DELETE FROM cdr.edr_by_id WHERE id = %s and created_at = %s".format(keys.head, keys(4))
+      "DELETE FROM cdr.edr_by_id2 WHERE id = %s and created_at = %s".format(keys.head, keys(4))
     ) map {s => s.replaceAll("\"", "\'")} foreach (con.execSession(_))
   }
 

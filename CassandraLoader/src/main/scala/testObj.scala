@@ -23,7 +23,11 @@ object testObj {
 
     val loaders = create_loaders(args)
 
-    if (loaders.size == 1) {
+
+    val nr_of_successful_requests = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata", args(1), args(2)).run_separate()
+    Seq("bash","-c","echo %s >> %s".format(nr_of_successful_requests, args(2)))!!
+
+    /*if (loaders.size == 1) {
       val f1 = Future {
         loaders(0).run_separate()
       }
@@ -51,7 +55,7 @@ object testObj {
       calc_sum(args(2), Await.result(f1, 720 minute), Await.result(f2, 720 minute), Await.result(f3, 720 minute), Await.result(f4, 720 minute))
     }
 
-    println("main thread unblocked")
+    println("main thread unblocked")*/
     /*val f11 = Future { loaders(0).run_mix() }
     val f12 = Future { loaders(1).run_mix() }
     val f13 = Future { loaders(2).run_mix() }
