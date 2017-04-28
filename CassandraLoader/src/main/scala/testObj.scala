@@ -81,7 +81,7 @@ object testObj {
     val scan = new Scanner(System.in);
     if (args.size == 4) {
       println("start by typing something")
-      scan.nextLine()
+      //scan.nextLine()
       if(args(0).toInt == 0) {
         List(new Loader(args(0).toInt,"Thread-1", "/root/thesis/dataModel/mockdata-0", args(1), args(2)),
           new Loader(args(0).toInt,"Thread-2", "/root/thesis/dataModel/mockdata-1", args(1), args(2)),
@@ -96,7 +96,7 @@ object testObj {
     else {
 
       println("start by typing something")
-      scan.nextLine()
+      //scan.nextLine()
       if(args(0).toInt == 0) {
         List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1), args(2)),
           new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1), args(2)),

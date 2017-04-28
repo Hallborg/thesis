@@ -9,7 +9,7 @@ import java.util.Calendar
   */
 class Loader(setting: Int,thread_name: String, filePath: String, ip: String, crudOp: String) {
   val INC_AMOUNT = 128
-  val EXEC_TIME = 300000
+  val EXEC_TIME = 180000
   def run_separate(): Int = {
 
     if (setting == 0) {
@@ -236,6 +236,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
       nr_of_runs = nr_of_runs + 1
       date_stop = Calendar.getInstance.getTimeInMillis
+      if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
         //Seq("bash", "-c", "echo '%s' >> %s".format(Json.parse(elem),filePath+".wrote"))!!;
 
@@ -243,10 +244,13 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     //println(thread_name + " completed writing rest, sleeping 20s")
     //Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
+    con.closeCon()
     //Seq("bash","-c","head -n %s %s > %s".format(nr_of_runs,filePath, filePath+".wrote"))!!;
     "shuf %s -o %s".format(filePath, filePath) !!;
     //println(con.nr_of_successful.toDouble / (nr_of_runs*6).toDouble)
-    con.closeCon()
+
+
     //Thread.sleep(40000)
     con.nr_of_successful
   }
@@ -265,15 +269,17 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + " handled read: " + i)
       nr_of_runs = nr_of_runs +1
       date_stop = Calendar.getInstance.getTimeInMillis
+      if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
 
     //println(thread_name + " completed reading, sleeping 20s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    "shuf %s -o %s".format(filePath, filePath) !!;
 
-    //Thread.sleep(10000)
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
     con.closeCon()
+    //Thread.sleep(10000)
 
+    "shuf %s -o %s".format(filePath, filePath) !!;
     con.nr_of_successful
   }
 
@@ -291,11 +297,14 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + "handled update: " + i)
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
+      if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
     //println(thread_name + " completed updating, sleeping 20s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    "shuf %s -o %s".format(filePath, filePath) !!;
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
     con.closeCon()
+    "shuf %s -o %s".format(filePath, filePath) !!;
+
     //Thread.sleep(40000)
     con.nr_of_successful
   }
@@ -314,10 +323,13 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + "handled delete: " + i)
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
+      if(nr_of_runs % 2 == 0) Thread.sleep(1)
+
     }}
     //println(thread_name + " completed deleting, sleeping 10s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
     //println(thread_name + " completed deleting, sleeping 20s")
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
     con.closeCon()
     //Thread.sleep(20000)
     con.nr_of_successful

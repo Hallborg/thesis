@@ -20,13 +20,15 @@ class CassandraClientClass(var ip: String) {
   def execSession(theStr: String) = {
 
     Future {
-      session.execute(theStr).one
+      session.executeAsync(theStr).get
     } onComplete {
       case Success(row) => nr_of_successful += 1
       case Failure(t) => 1 + 1
     }
-
-    //println(session.execute(theStr).one())
+    //Future {
+      //session.executeAsync(theStr).get
+    //} 
+    //session.executeAsync(theStr)
   }
   def closeCon(): Unit = {
     session.close()
