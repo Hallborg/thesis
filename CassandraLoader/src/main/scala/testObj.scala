@@ -23,7 +23,11 @@ object testObj {
 
     val loaders = create_loaders(args)
 
-    if (loaders.size == 1) {
+
+    val nr_of_successful_requests = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata", args(1), args(2)).run_separate()
+    Seq("bash","-c","echo %s >> %s".format(nr_of_successful_requests, args(2)))!!
+
+    /*if (loaders.size == 1) {
       val f1 = Future {
         loaders(0).run_separate()
       }
@@ -48,10 +52,10 @@ object testObj {
       }
 
       println("main thread blocked")
-      (Await.result(f1, 60 minute), Await.result(f2, 60 minute), Await.result(f3, 60 minute), Await.result(f4, 60 minute))
+      calc_sum(args(2), Await.result(f1, 720 minute), Await.result(f2, 720 minute), Await.result(f3, 720 minute), Await.result(f4, 720 minute))
     }
 
-    println("main thread unblocked")
+    println("main thread unblocked")*/
     /*val f11 = Future { loaders(0).run_mix() }
     val f12 = Future { loaders(1).run_mix() }
     val f13 = Future { loaders(2).run_mix() }
@@ -69,36 +73,38 @@ object testObj {
 
 
   }
-
+  def calc_sum(ops: String, a: Int, b: Int , c: Int, d: Int) = {
+    Seq("bash","-c","echo %s >> %s".format((a+b+c+d),ops))!!
+  }
 
   def create_loaders(args: Array[String]): List[Loader] = {
     val scan = new Scanner(System.in);
-    if (args.size == 3) {
+    if (args.size == 4) {
       println("start by typing something")
-      scan.nextLine()
+      //scan.nextLine()
       if(args(0).toInt == 0) {
-        List(new Loader(args(0).toInt,"Thread-1", "/root/thesis/dataModel/mockdata-0", args(1)),
-          new Loader(args(0).toInt,"Thread-2", "/root/thesis/dataModel/mockdata-1", args(1)),
-          new Loader(args(0).toInt,"Thread-3", "/root/thesis/dataModel/mockdata-2", args(1)),
-          new Loader(args(0).toInt,"Thread-4", "/root/thesis/dataModel/mockdata-3", args(1)))
+        List(new Loader(args(0).toInt,"Thread-1", "/root/thesis/dataModel/mockdata-0", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-2", "/root/thesis/dataModel/mockdata-1", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-3", "/root/thesis/dataModel/mockdata-2", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-4", "/root/thesis/dataModel/mockdata-3", args(1), args(2)))
       }
       else {
-        List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1)))
+        List(new Loader(args(0).toInt,"Thread-1", "~/thesis/dataModel/mockdata-0", args(1), args(2)))
       }
 
     }
     else {
 
       println("start by typing something")
-      scan.nextLine()
+      //scan.nextLine()
       if(args(0).toInt == 0) {
-        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)),
-          new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1)),
-          new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2", args(1)),
-          new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-3", args(1)))
+        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-2", "../dataModel/mockdata-1", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-3", "../dataModel/mockdata-2", args(1), args(2)),
+          new Loader(args(0).toInt,"Thread-4", "../dataModel/mockdata-3", args(1), args(2)))
       }
       else {
-        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1)))
+        List(new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata-0", args(1), args(2)))
       }
 
     }
