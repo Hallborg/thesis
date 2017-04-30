@@ -59,6 +59,7 @@ def set_global_var3(value):
 def read_am(reader, name):
 	reader = list(reader)
 	reader = reader[0]
+	print reader
 	for i in range(0, len(reader)):
 		reader[i] = float(reader[i])
 	return reader, [1, 1, 1, 1]
@@ -290,7 +291,7 @@ def csv_to_line_list(path_n_min):
 	for i in range(1,CSV_AMOUNT): # CSV_AMOUNT
 		with open(str(path[0])+str(path[i]), 'r') as f:
 			print "Current file %s is in use." % (str(path[i]))
-			temp1, temp2 = filter_the_file(csv.reader(f), path[i])
+			temp1, temp2 = filter_the_file(csv.reader(f), path[i], i-1)
 			means_for_line_graph.append(temp1)
 			time_stamps.append(temp2)
 			if '_dockeriso' in path[i]:
@@ -304,7 +305,7 @@ def csv_to_line_list(path_n_min):
 	return means_for_line_graph, labelSt, time_stamps
 
 """  """
-def filter_the_file(reader, name):
+def filter_the_file(reader, name, it_label):
 	i = 0
 	loop = True
 	if '_lxc' in name:
@@ -358,8 +359,8 @@ def filter_the_file(reader, name):
 			loop = False
 	spl = [list(y) for x, y in itertools.groupby(list_to_ret, lambda z: z == 'Walla') if not x]
 	peak_timestamps = [timestamps_of_peaks[i:i + PEAK_SIZE] for i in xrange(0, len(timestamps_of_peaks), PEAK_SIZE)]
-	spl = filter_on_amount(spl)
-	peak_timestamps = filter_on_amount(peak_timestamps)
+	#spl = filter_on_amount(spl)
+	#peak_timestamps = filter_on_amount(peak_timestamps)
 	i = 0
 	print spl
 	for j in range(0, len(spl)):
@@ -370,6 +371,12 @@ def filter_the_file(reader, name):
 	 	print 'Graph %d had: %d peaks.' % (i+1, len(ins))
 	 	i = i + 1
 	print '\n'
+	if 'cpu_cass_step_lxc.csv' in name:
+		peak_timestamps[3][2] = 3.0
+	iterator=0
+	for op in lb_operation:
+		write_csv_to_a_file(spl[iterator], iterator, lb1[it_label], op, "lines")
+		iterator = iterator + 1
 	return spl, peak_timestamps
 
 """  """
@@ -518,11 +525,17 @@ def write_csv_to_a_file(a_list, i, name, device_name, st):
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	if "_comp" in st:
 		file = open("%s/../csv-and-graphs/anova/comp-csv/%s-%s-%s.csv" % (str(dir_path), name, device_name, lb_operation[i]), "w")
+	elif "lines" in st:
+		file = open("%s/../csv-and-graphs/anova/lines/%s-%s.csv" % (str(dir_path), name, device_name), "w")
 	else:
 		file = open("%s/../csv-and-graphs/anova/csv/%s-%s-%s.csv" % (str(dir_path), name, device_name, lb_operation[i]), "w")
 	#file.write(a_list)
 	for item in a_list:
-		file.write(str(item)+', ')
+		if "lines" in st:
+			f = str(item).replace('[', '')
+			file.write(f+', ')
+		else:
+			file.write(str(item)+', ')
 	file.close()
 
 """ Main window. """
