@@ -29,12 +29,12 @@ object Importer {
 
   def executeRead(keys: List[String], con: CassandraClientClass): Unit = {
     Seq(
-      "SELECT * FROM cdr.edr_by_id WHERE id = %s".format(keys.head),
-      "SELECT * FROM cdr.edr_by_destination WHERE destination = %s and id = %s".format(keys(2),keys.head),
-      "SELECT * FROM cdr.edr_by_service WHERE service = %s and started_at = %s".format(keys(3), keys(1)),
-      "SELECT * FROM cdr.edr_by_date WHERE started_at = %s".format(keys(1)),
-      "SELECT * FROM cdr.edr_by_date2 WHERE created_at = %s".format(keys(4)),
-      "SELECT * FROM cdr.edr_by_id2 WHERE id = %s and created_at = %s".format(keys.head, keys(4))
+      "SELECT service FROM cdr.edr_by_id WHERE id = %s".format(keys.head),
+      "SELECT service FROM cdr.edr_by_destination WHERE destination = %s and id = %s".format(keys(2),keys.head),
+      "SELECT id FROM cdr.edr_by_service WHERE service = %s and started_at = %s".format(keys(3), keys(1)),
+      "SELECT id FROM cdr.edr_by_date WHERE started_at = %s".format(keys(1)),
+      "SELECT started_at FROM cdr.edr_by_date2 WHERE created_at = %s".format(keys(4)),
+      "SELECT started_at FROM cdr.edr_by_id2 WHERE id = %s and created_at = %s".format(keys.head, keys(4))
     ) map {s => s.replaceAll("\"", "\'")} foreach (con.execSession(_))
   }
   def executeUpdate(keys: List[String], new_vals: List[String], con:CassandraClientClass):Unit = {
