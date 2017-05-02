@@ -1,14 +1,16 @@
-# Thesis project by Jesper Hallborg and Patryk Sulewski
+# Thesis project in Computer Science @ Blekinge Tekniska Högskola (BTH)
+## Authors: Jesper Hallborg, Patryk Sulewski
 
-This repository contains the code for uploading a batch file / queue into a cassandra cluster
-and also benchmarking the results. 
+## Overview
 
-The results should be uploaded to Graphana for visualization purposes
+Microservices are becoming more and more used in software companies around the globe.
 
+These containers applications might have a big impact on how databases behaves and needs investigation.
 
-## Required steps
+## In this repo
 
-* Cassandra installed in vm, with and without docker
-* a batch file of data to use
-* setup a queue to load data into cassanda with and without docker
-* Use THIS source code to load the batch file, with and without docker
+This repository contains the source code for :
+* a cassandra-loader in Scala
+* python scripts to draw graphs from
+* data in csv format from Jmeter
+
