@@ -23,12 +23,14 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     }
     else {
-      crudOp match {
+      /*crudOp match {
         case "c" => step_write()
         case "r" => step_read()
         case "u" => step_update()
         case "d" => step_del()
-      }
+      }*/
+      step_mix()
+      0
     }
   }
   def run_mix(): Int = {
@@ -189,36 +191,42 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
   def step_mix(): Unit = {
     val con = new CassandraClientClass(ip)
     val it = Source.fromFile(filePath).getLines
-
+    val id_keeper = new IdKeeper(filePath)
     var start = 0
     var end = 127
     var i = 0
     val objects = new scala.collection.mutable.Queue[JsValue]
 
-    for (elem <- it) {
+    breakable { for (elem <- it) {
+
       if ( start <= end) {
         start = start + 1
         objects.enqueue(Json.parse(elem))
       }
       else {
         for (i <- 0 to objects.size) {
-          if (i == 0) Importer.executeWrite(objects.dequeue(), con)
-          //else if(i % 3 == 0) Importer.executeRead(id_keeper.fetch_random(), con)
-          else Importer.executeWrite(objects.dequeue(), con)
+          if (i == 0) Importer.executeRead(id_keeper.fetch_random(), con)
+          else if(i % 3 == 0) Importer.executeUpdate(id_keeper.fetch_random(),id_keeper.fetch_prev(),con)
+          else Importer.executeRead(id_keeper.fetch_random(), con)
         }
         start = 0
         println(thread_name + " step_mix: " + (end + 1))
         end = end + INC_AMOUNT
-
+        if (end == 2687) break
         Thread.sleep(10000 + i * 1000)
 	      i = i + 1
 
       }
+      /*val sent = con.session.getCluster.getMetrics.getRequestsTimer.getCount
+      val queue = con.session.getCluster.getMetrics.getExecutorQueueDepth.getValue
+      println(sent, queue)
+      println("nr of responses : " + (queue - sent))*/
 
-    }
-
-    //println(thread_name + " completed step_reading, sleeping 20s")
+    } }
     con.closeCon()
+    "shuf %s -o %s".format(filePath, filePath) !!;
+    //println(thread_name + " completed step_reading, sleeping 20s")
+
     //Thread.sleep(20000)
   }
 
@@ -236,7 +244,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (nr_of_runs % 100 == 0) println(thread_name + " handled write: " + nr_of_runs)
       nr_of_runs = nr_of_runs + 1
       date_stop = Calendar.getInstance.getTimeInMillis
-      if(nr_of_runs % 2 == 0) Thread.sleep(1)
+      //if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
         //Seq("bash", "-c", "echo '%s' >> %s".format(Json.parse(elem),filePath+".wrote"))!!;
 
@@ -244,7 +252,9 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
     //println(thread_name + " completed writing rest, sleeping 20s")
     //Seq("bash","-c","echo %s > %s".format(nr_of_runs,thread_name))!!;
-    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
+    val sent = con.session.getCluster.getMetrics.getRequestsTimer.getCount
+    val avg = con.session.getCluster.getMetrics.getRequestsTimer.getOneMinuteRate
+    println(sent)
     con.closeCon()
     //Seq("bash","-c","head -n %s %s > %s".format(nr_of_runs,filePath, filePath+".wrote"))!!;
     "shuf %s -o %s".format(filePath, filePath) !!;
@@ -252,7 +262,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
 
 
     //Thread.sleep(40000)
-    con.nr_of_successful
+    0
   }
 
   def read(): Int = {
@@ -269,13 +279,13 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + " handled read: " + i)
       nr_of_runs = nr_of_runs +1
       date_stop = Calendar.getInstance.getTimeInMillis
-      if(nr_of_runs % 2 == 0) Thread.sleep(1)
+      //if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
 
     //println(thread_name + " completed reading, sleeping 20s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
 
-    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ nr_of_runs)
     con.closeCon()
     //Thread.sleep(10000)
 
@@ -297,11 +307,11 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + "handled update: " + i)
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
-      if(nr_of_runs % 2 == 0) Thread.sleep(1)
+      //if(nr_of_runs % 2 == 0) Thread.sleep(1)
     }}
     //println(thread_name + " completed updating, sleeping 20s")
     //Seq("bash","-c","echo %s >> %s".format(nr_of_runs,thread_name))!!;
-    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ con.nr_of_successful)
+    println(con.session.getCluster.getMetrics.getRequestsTimer.getCount +" "+ nr_of_runs)
     con.closeCon()
     "shuf %s -o %s".format(filePath, filePath) !!;
 
@@ -323,7 +333,7 @@ class Loader(setting: Int,thread_name: String, filePath: String, ip: String, cru
       //if (i % 100 == 0) println(thread_name + "handled delete: " + i)
       nr_of_runs += 1
       date_stop = Calendar.getInstance.getTimeInMillis
-      if(nr_of_runs % 2 == 0) Thread.sleep(1)
+      //if(nr_of_runs % 2 == 0) Thread.sleep(1)
 
     }}
     //println(thread_name + " completed deleting, sleeping 10s")

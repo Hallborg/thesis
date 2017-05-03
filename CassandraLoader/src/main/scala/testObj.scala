@@ -21,11 +21,15 @@ object testObj {
 
 
 
-    val loaders = create_loaders(args)
+    //val loaders = create_loaders(args)
 
+    if (args.size == 4) {
+      val nr_of_successful_requests = new Loader(args(0).toInt,"Thread-1", "/root/thesis/dataModel/mockdata", args(1), args(2)).run_separate()
+    }
+    else {
+      val nr_of_successful_requests = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata", args(1), args(2)).run_separate()
+    }
 
-    val nr_of_successful_requests = new Loader(args(0).toInt,"Thread-1", "../dataModel/mockdata", args(1), args(2)).run_separate()
-    Seq("bash","-c","echo %s >> %s".format(nr_of_successful_requests, args(2)))!!
 
     /*if (loaders.size == 1) {
       val f1 = Future {
